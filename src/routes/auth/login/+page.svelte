@@ -1,4 +1,5 @@
 <script lang="ts">
+    import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     let username = "";
     let password = "";
 
@@ -10,38 +11,12 @@
 <h1 class="text-3xl font-bold">Anmelden</h1>
 
 <form
-    class="m-4 w-[40%] gap-4 space-y-8 p-4 max-w-[32rem]"
+    class="m-4 w-[40%] max-w-[32rem] gap-4 space-y-8 p-4"
     autocomplete="off"
     on:submit|preventDefault|stopPropagation={submit}
 >
-    <div>
-        <label
-            for="username"
-            class="absolute -translate-y-4 translate-x-5 select-none bg-ffdark px-1 text-gray-300"
-        >
-            Name
-        </label>
-        <input
-            type="text"
-            id="username"
-            class="w-full rounded-lg border-2 border-ffred bg-transparent p-2 focus:outline-none"
-            bind:value={username}
-        />
-    </div>
-    <div>
-        <label
-            for="password"
-            class="absolute -translate-y-4 translate-x-5 select-none bg-ffdark px-1 text-gray-300"
-        >
-            Passwort
-        </label>
-        <input
-            type="password"
-            id="password"
-            class="w-full rounded-lg border-2 border-ffred bg-transparent p-2 focus:outline-none"
-            bind:value={password}
-        />
-    </div>
+    <LabeledInput label="Benutzername" bind:value={username} />
+    <LabeledInput label="Passwort" bind:value={password} type="password" />
     <div>
         <button
             type="submit"
