@@ -1,13 +1,13 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
+    import { clearSession } from "$lib/util/cookie";
     import { onMount } from "svelte";
 
     let dropdown: HTMLDivElement;
 
     let isOpen = false;
     const profile = () => {
-        console.log("profile");
         if (!isOpen) {
             dropdown.classList.add("flex");
             dropdown.classList.remove("hidden");
@@ -20,8 +20,7 @@
     };
 
     const logout = () => {
-        console.log("logout");
-        // document.cookie = "token=; Max-Age=0; path=/;";
+        clearSession();
         goto("/auth/login");
     };
 
@@ -29,7 +28,6 @@
         if (browser) {
             document.addEventListener("click", (e) => {
                 if (!dropdown.contains(e.target as Node) && isOpen) {
-                    console.log("click");
                     isOpen = false;
                     dropdown.classList.remove("flex");
                     dropdown.classList.add("hidden");
@@ -49,8 +47,12 @@
     </h1>
 
     <div class="w-32 h-16">
-        <span class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[13rem]"></span>
-        <span class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[15rem]"></span>
+        <span
+            class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[13rem]"
+        ></span>
+        <span
+            class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[15rem]"
+        ></span>
     </div>
 
     {#if isLoggedIn}

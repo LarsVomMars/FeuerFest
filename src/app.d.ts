@@ -2,7 +2,9 @@
 
 declare namespace App {
     // interface Platform {}
-    // interface Locals {}
+    interface Locals {
+        user?: import("$lib/util/tokens").SessionToken;
+    }
     // interface Error {}
     // interface Session {}
     // interface Stuff {}

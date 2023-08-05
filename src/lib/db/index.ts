@@ -1,10 +1,24 @@
 import { Kysely, MysqlDialect } from "kysely";
-import { DATABASE_URL } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type { DB } from "./schema";
-import { createPool } from "mysql2/promise";
+import { createPool } from "mysql2";
 
-export const db = new Kysely<DB>({
+const db = new Kysely<DB>({
     dialect: new MysqlDialect({
-        pool: createPool(DATABASE_URL),
+        pool: createPool({ uri: env.DATABASE_URL }),
     }),
 });
+
+export default db;
+
+export enum Role {
+    OWNER = "OWNER",
+    ADMIN = "ADMIN",
+    USER = "USER",
+}
+
+export enum Status {
+    PENDING = "PENDING",
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+}

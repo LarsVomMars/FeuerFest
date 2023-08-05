@@ -3,7 +3,7 @@
 
     export let value: string;
     export let label: string;
-    export let type: "text" | "password" | "number" = "text";
+    export let type: "text" | "password" | "number" | "email" = "text";
     let id = label.toLowerCase().replace(" ", "-");
 </script>
 
