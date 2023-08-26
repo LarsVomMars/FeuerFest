@@ -1,9 +1,10 @@
 <script lang="ts">
     import typeAction from "$lib/actions/typeAction";
 
-    export let value: string;
+    export let value: string | undefined;
     export let label: string;
     export let type: "text" | "password" | "number" | "email" = "text";
+    export let disabled = false;
     let id = label.toLowerCase().replace(" ", "-");
 </script>
 
@@ -19,5 +20,6 @@
         {id}
         class="w-full rounded-lg border-2 border-ffred bg-transparent p-2 focus:outline-none"
         bind:value
+        {disabled}
     />
 </div>

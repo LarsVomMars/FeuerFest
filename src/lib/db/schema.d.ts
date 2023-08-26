@@ -8,12 +8,12 @@ export interface User {
   id: Generated<number>;
   email: string;
   name: string;
-  username: string | null;
-  createdAt: Generated<Date>;
-  updatedAt: Date | null;
-  password: string | null;
+  username: Generated<string | null>;
+  password: Generated<string | null>;
   role: Generated<"ADMIN" | "OWNER" | "USER">;
   status: Generated<"ACTIVE" | "INACTIVE" | "PENDING">;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date | null>;
 }
 
 export interface DB {

@@ -14,6 +14,8 @@ const SIGNING_OPTIONS = {
     audience: "urn:feuerfest:client",
 };
 
+// TODO: Tokens in DB for revocation
+
 const encrypt = <T extends Record<string, unknown>>(data: T) =>
     V3.encrypt(data, SIGNING_KEY, SIGNING_OPTIONS);
 

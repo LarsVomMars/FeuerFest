@@ -3,16 +3,29 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+// TODO: Non-Nullable and insert empty string as default
 model User {
-    id        Int       @id @default(autoincrement())
-    email     String    @unique
-    name      String
-    username  String?   @unique
-    password  String?
-    role      Role      @default(USER)
-    status    Status    @default(PENDING)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @updatedAt
+    id          Int           @id @default(autoincrement())
+    email       String        @unique
+    name        String
+    username    String        @unique @default("")
+    password    String        @default("")
+    role        Role          @default(USER)
+    status      Status        @default(PENDING)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime?     @updatedAt
+
+    UserSession UserSession[]
+}
+
+model UserSession {
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [userId], references: [id])
+    token     String   @unique
+    createdAt DateTime @default(now())
+    expiresAt DateTime
+    
+    userId    Int
 }
 
 enum Role {
