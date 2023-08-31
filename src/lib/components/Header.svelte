@@ -70,7 +70,11 @@
             class="fixed right-0 top-16 hidden h-40 w-40 flex-col items-center justify-between border-t border-t-black bg-ffred z-50"
             bind:this={dropdown}
         >
-            <a href="/users/me" class="p-2 hover:text-gray-200" on:click={profile}>Profil</a>
+            <a
+                href="/users/me"
+                class="p-2 hover:text-gray-200"
+                on:click={profile}>Profil</a
+            >
             <div class="p-2">Sprache</div>
             <div class="p-2">Dunkler Modus</div>
             <button on:click={logout} class="p-2 hover:text-gray-200">

@@ -4,6 +4,6 @@ import type { LayoutServerLoad } from "./$types";
 export const load: LayoutServerLoad = async (event) => {
     return {
         trpc: trpcServer.hydrateToClient(event),
-        user: event.locals.user,
+        // user: event.locals.user,
     };
 };

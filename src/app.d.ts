@@ -3,7 +3,7 @@
 declare namespace App {
     // interface Platform {}
     interface Locals {
-        user?: import("$lib/util/tokens").SessionToken;
+        request?: import("$lib/auth").Request;
     }
     // interface Error {}
     // interface Session {}

@@ -1,18 +1,10 @@
-import { verifySessionToken } from "$lib/util/tokens";
+import auth from "$lib/auth";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
 export const session: Handle = async ({ event, resolve }) => {
-    const session = event.cookies.get("session");
-    if (session) {
-        try {
-            event.locals.user = await verifySessionToken(session);
-        } catch (e) {
-            event.locals.user = undefined;
-            event.cookies.delete("session");
-        }
-    }
-
+    const request = auth.handleRequest(event);
+    event.locals.request = request;
     return resolve(event);
 };
 
