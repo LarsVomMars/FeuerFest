@@ -2,6 +2,7 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
+    import { trpc } from "$lib/trpc";
     import { onMount } from "svelte";
 
     let dropdown: HTMLDivElement;
@@ -19,8 +20,13 @@
         }
     };
 
+    const logoutRequest = trpc.auth.logout.mutation({
+        onSuccess: () => {
+            goto("/auth/login");
+        },
+    });
     const logout = () => {
-        goto("/auth/login");
+        $logoutRequest.mutate();
     };
 
     onMount(() => {
