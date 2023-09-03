@@ -1,7 +1,7 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
-    import { clearSession } from "$lib/util/cookie";
+    import { page } from "$app/stores";
     import { onMount } from "svelte";
 
     let dropdown: HTMLDivElement;
@@ -20,7 +20,6 @@
     };
 
     const logout = () => {
-        clearSession();
         goto("/auth/login");
     };
 
@@ -36,7 +35,7 @@
         }
     });
 
-    export let isLoggedIn = true;
+    $: showProfile = !$page.route.id?.startsWith("/auth");
 </script>
 
 <header
@@ -55,7 +54,7 @@
         ></span>
     </div>
 
-    {#if isLoggedIn}
+    {#if showProfile}
         <button on:click={profile}>
             <img
                 src="/icons/user.svg"

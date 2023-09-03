@@ -1,7 +1,13 @@
 import { Role, Status } from "$lib/db";
 import type { RequestEvent } from "@sveltejs/kit";
 import type { Session } from "./session";
-import { deleteSession, deleteSessionByToken, getSessionByToken } from "./db";
+import {
+    createUserSession,
+    deleteSessionById,
+    deleteSessionByToken,
+    getSessionByToken,
+} from "./db";
+import { generateSessionId, getExpirationDate } from "$lib/util/auth";
 
 const SESSION_COOKIE_NAME = "session";
 
@@ -9,7 +15,6 @@ export class Request {
     private event: RequestEvent;
 
     constructor(event: RequestEvent) {
-        console.log("Request");
         this.event = event;
     }
 
@@ -31,7 +36,7 @@ export class Request {
         ) {
             this.event.cookies.delete(SESSION_COOKIE_NAME);
             // sessionId instead of userId? -> modify query
-            await deleteSession(session.id);
+            await deleteSessionById(session.id);
             return null;
         }
 
@@ -49,7 +54,19 @@ export class Request {
         return sessionData;
     }
 
-    public setSession(session: string, expiresAt: Date) {
+    public async createSession(userId: number) {
+        const sessionId = generateSessionId();
+        const expirationDate = getExpirationDate();
+        const session = await createUserSession(
+            sessionId,
+            userId,
+            expirationDate,
+        );
+        if (!session) return;
+        this.setSession(session.token, session.expiresAt);
+    }
+
+    private setSession(session: string, expiresAt: Date) {
         this.event.cookies.set(SESSION_COOKIE_NAME, session, {
             path: "/",
             httpOnly: true,

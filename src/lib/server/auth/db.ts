@@ -11,7 +11,7 @@ export const getSessionByToken = async (token: string) => {
     return session;
 };
 
-export const deleteSession = (sessionId: number) =>
+export const deleteSessionById = (sessionId: number) =>
     db.deleteFrom("UserSession").where("id", "=", sessionId).execute();
 
 export const deleteSessionByToken = (token: string) =>

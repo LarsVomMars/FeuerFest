@@ -4,7 +4,6 @@ import { TRPCError } from "@trpc/server";
 import { procedure, router } from "../trpc";
 import { z } from "zod";
 import { comparePassword, hashPassword } from "$lib/util/password";
-import { createSession } from "../auth/auth";
 
 const getTokenUser = async (token: string) => {
     const { id } = await verifyActivationToken(token);
@@ -102,12 +101,7 @@ export default router({
                     code: "BAD_REQUEST",
                     message: "User is not active",
                 });
-
-            const session = (await createSession(user.id))!;
-            ctx.event.locals.request.setSession(
-                session.token,
-                session.expiresAt,
-            );
+            await ctx.event.locals.request.createSession(user.id);
         }),
     logout: procedure.mutation(async ({ ctx }) => {
         await ctx.event.locals.request.clearSession();
