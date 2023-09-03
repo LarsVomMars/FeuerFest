@@ -47,7 +47,10 @@ export default router({
             if (!userId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
             const token = await createActivationToken(userId);
-            const url = new URL(`/auth/activate/${token}`, ctx.host);
+            const url = new URL(
+                `/auth/activate/${token}`,
+                ctx.event.url.origin,
+            );
 
             await sendMailWithHTML(
                 input.email,

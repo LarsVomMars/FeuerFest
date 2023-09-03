@@ -8,14 +8,23 @@ export interface User {
   id: Generated<number>;
   email: string;
   name: string;
-  username: Generated<string | null>;
-  password: Generated<string | null>;
-  role: Generated<"ADMIN" | "OWNER" | "USER">;
-  status: Generated<"ACTIVE" | "INACTIVE" | "PENDING">;
+  username: Generated<string>;
+  password: Generated<string>;
+  role: Generated<unknown>;
+  status: Generated<unknown>;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
 }
 
+export interface UserSession {
+  id: Generated<number>;
+  token: string;
+  createdAt: Generated<Date>;
+  expiresAt: Date;
+  userId: number;
+}
+
 export interface DB {
   User: User;
+  UserSession: UserSession;
 }

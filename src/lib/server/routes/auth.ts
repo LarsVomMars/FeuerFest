@@ -1,13 +1,10 @@
-import db, { Role, Status } from "$lib/db";
-import {
-    createSessionToken,
-    verifyActivationToken,
-    type ActivationToken,
-} from "$lib/util/tokens";
+import db, { Status } from "$lib/db";
+import { verifyActivationToken, type ActivationToken } from "$lib/util/tokens";
 import { TRPCError } from "@trpc/server";
 import { procedure, router } from "../trpc";
 import { z } from "zod";
 import { comparePassword, hashPassword } from "$lib/util/password";
+import { createSession } from "../auth/auth";
 
 const getTokenUser = async (token: string) => {
     const { id } = await verifyActivationToken(token);
@@ -83,7 +80,7 @@ export default router({
         }),
     login: procedure
         .input(z.object({ username: z.string(), password: z.string() }))
-        .mutation(async ({ input }) => {
+        .mutation(async ({ ctx, input }) => {
             const user = await db
                 .selectFrom("User")
                 .where("username", "=", input.username)
@@ -106,11 +103,13 @@ export default router({
                     message: "User is not active",
                 });
 
-            const token = await createSessionToken(
-                user.id,
-                user.name,
-                user.role as Role,
+            const session = (await createSession(user.id))!;
+            ctx.event.locals.request.setSession(
+                session.token,
+                session.expiresAt,
             );
-            return { token };
         }),
+    logout: procedure.mutation(async ({ ctx }) => {
+        await ctx.event.locals.request.clearSession();
+    }),
 });

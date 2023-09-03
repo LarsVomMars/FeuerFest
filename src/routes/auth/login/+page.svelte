@@ -2,15 +2,13 @@
     import { goto } from "$app/navigation";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { trpc } from "$lib/trpc";
-    import { setSession } from "$lib/util/cookie";
     let username = "";
     let password = "";
 
     let disabled = false;
 
     const loginRequest = trpc.auth.login.mutation({
-        onSuccess: ({ token }) => {
-            setSession(token);
+        onSuccess: () => {
             goto("/");
         },
     });

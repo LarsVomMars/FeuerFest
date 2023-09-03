@@ -1,12 +1,9 @@
 <script lang="ts">
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { trpc } from "$lib/trpc";
-    import { setSession } from "$lib/util/cookie";
 
     const meRequest = trpc.users.me.query();
-    const updateRequest = trpc.users.updateMe.mutation({
-        onSuccess: (token) => setSession(token),
-    });
+    const updateRequest = trpc.users.updateMe.mutation();
 
     $: id = $meRequest.data?.id!;
     let name = "";

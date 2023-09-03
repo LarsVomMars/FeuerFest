@@ -1,15 +1,12 @@
 <script lang="ts">
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { trpc } from "$lib/trpc";
-    import { setSession } from "$lib/util/cookie";
 
     let currentPassword = "";
     let newPassword = "";
     let validateNewPassword = "";
 
-    const updateRequest = trpc.users.updatePassword.mutation({
-        onSuccess: (token) => setSession(token),
-    });
+    const updateRequest = trpc.users.updatePassword.mutation();
 
     const updatePassword = () => {
         $updateRequest.mutate({

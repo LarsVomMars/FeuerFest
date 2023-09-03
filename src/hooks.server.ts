@@ -1,10 +1,9 @@
-import auth from "$lib/auth";
+import { handleRequest } from "$lib/server/auth";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
 export const session: Handle = async ({ event, resolve }) => {
-    const request = auth.handleRequest(event);
-    event.locals.request = request;
+    event.locals.request = handleRequest(event);
     return resolve(event);
 };
 
