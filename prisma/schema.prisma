@@ -16,8 +16,10 @@ model User {
     updatedAt DateTime? @updatedAt
 
     UserSession UserSession[]
+    Event       Event[]
 }
 
+// token insted of id?
 model UserSession {
     id        Int      @id @default(autoincrement())
     user      User     @relation(fields: [userId], references: [id])
@@ -26,6 +28,20 @@ model UserSession {
     expiresAt DateTime
 
     userId Int
+}
+
+model Event {
+    id          Int      @id @default(autoincrement())
+    name        String   @unique
+    description String
+    location    String
+    start       DateTime
+    end         DateTime
+
+    createdAt   DateTime  @default(now())
+    createdBy   User      @relation(fields: [createdById], references: [id])
+    updatedAt   DateTime? @updatedAt
+    createdById Int
 }
 
 enum Role {

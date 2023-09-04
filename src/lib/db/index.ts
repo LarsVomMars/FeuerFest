@@ -17,6 +17,12 @@ export enum Role {
     USER = "USER",
 }
 
+export const RoleValue = {
+    USER: 0,
+    ADMIN: 1,
+    OWNER: 2,
+};
+
 export enum Status {
     PENDING = "PENDING",
     ACTIVE = "ACTIVE",

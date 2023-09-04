@@ -44,7 +44,7 @@ export default router({
                 validatePassword: z.string().min(8),
             }),
         )
-        .mutation(async ({ input }) => {
+        .mutation(async ({ ctx, input }) => {
             let user: ActivationToken;
             try {
                 user = await getTokenUser(input.token);
@@ -76,6 +76,7 @@ export default router({
                 })
                 .where("id", "=", user.id)
                 .execute();
+            await ctx.event.locals.request.createSession(user.id);
         }),
     login: procedure
         .input(z.object({ username: z.string(), password: z.string() }))
