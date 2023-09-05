@@ -1,6 +1,7 @@
 import { procedure, router } from "../trpc";
 import { z } from "zod";
-import db, { Role } from "$lib/db/";
+import db from "$lib/db";
+import { Role } from "$lib/db/types";
 import { TRPCError } from "@trpc/server";
 import { sendMailWithHTML } from "$lib/util/mail";
 import { createActivationToken } from "$lib/util/tokens";

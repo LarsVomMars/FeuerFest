@@ -1,4 +1,4 @@
-import type { Role } from "$lib/db";
+import type { Role } from "$lib/db/types";
 
 export type SessionUser = {
     id: number;

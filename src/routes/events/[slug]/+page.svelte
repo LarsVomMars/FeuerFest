@@ -1,0 +1,16 @@
+<script lang="ts">
+    import { page } from "$app/stores";
+    import { trpc } from "$lib/trpc";
+
+    const slug = $page.params.slug!;
+    const eventRequest = trpc.events.getBySlug.query({ slug });
+    $: event = $eventRequest.data!;
+</script>
+
+{#if $eventRequest.isSuccess}
+    <h1 class="text-4xl font-black">{event.name}</h1>
+    <p class="text-xl">{event.description}</p>
+    <p class="text-xl">{event.location}</p>
+    <p class="text-xl">{event.start.toLocaleString()}</p>
+    <p class="text-xl">{event.end.toLocaleString()}</p>
+{/if}

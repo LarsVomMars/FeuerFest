@@ -5,5 +5,5 @@ import { RoleValue } from "$lib/db/types";
 export const load: PageServerLoad = async (event) => {
     const session = await event.locals.request.validateSession();
     const role = RoleValue[session!.user.role];
-    if (role < RoleValue.OWNER) throw redirect(302, "/");
+    if (role < RoleValue.ADMIN) throw redirect(302, "/");
 };

@@ -1,4 +1,5 @@
-import db, { Status } from "$lib/db";
+import db from "$lib/db";
+import { Status } from "$lib/db/types";
 import { verifyActivationToken, type ActivationToken } from "$lib/util/tokens";
 import { TRPCError } from "@trpc/server";
 import { procedure, router } from "../trpc";

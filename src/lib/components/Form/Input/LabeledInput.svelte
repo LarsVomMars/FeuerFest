@@ -1,9 +1,17 @@
 <script lang="ts">
     import typeAction from "$lib/actions/typeAction";
 
-    export let value: string | undefined;
     export let label: string;
-    export let type: "text" | "password" | "number" | "email" = "text";
+    export let type:
+        | "text"
+        | "password"
+        | "number"
+        | "email"
+        | "datetime-local" = "text";
+
+    // Dynamic mapping based on type
+    export let value: string | number | Date | undefined;
+
     export let disabled = false;
     let id = label.toLowerCase().replace(" ", "-");
 </script>

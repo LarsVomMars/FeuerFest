@@ -1,6 +1,8 @@
 import db from "$lib/db";
-import { user } from "$lib/server/middleware";
+import { admin, user } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 export default router({
     listActive: user.query(async () => {
@@ -33,5 +35,38 @@ export default router({
             .selectAll()
             .execute();
         return events;
+    }),
+    create: admin
+        .input(
+            z.object({
+                name: z.string(),
+                description: z.string(),
+                location: z.string(),
+                start: z.date(),
+                end: z.date(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { name, description, location, start, end } = input;
+            const slug = `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
+            await db
+                .insertInto("Event")
+                .values({
+                    name,
+                    slug,
+                    description,
+                    location,
+                    start,
+                    end,
+                    createdById: ctx.session.user.id,
+                })
+                .execute();
+            return slug;
+        }),
+    getBySlug: user.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+        const {slug} = input;
+        const event = await db.selectFrom("Event").where("slug", "=", slug).selectAll().executeTakeFirst();
+        if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found." });
+        return event;
     }),
 });

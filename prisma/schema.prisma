@@ -32,7 +32,8 @@ model UserSession {
 
 model Event {
     id          Int      @id @default(autoincrement())
-    name        String   @unique
+    name        String
+    slug        String   @unique
     description String
     location    String
     start       DateTime

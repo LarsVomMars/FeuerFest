@@ -1,4 +1,4 @@
-import { Role, Status } from "$lib/db";
+import { Role, Status } from "$lib/db/types";
 import type { RequestEvent } from "@sveltejs/kit";
 import type { Session } from "./session";
 import {
