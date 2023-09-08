@@ -1,6 +1,6 @@
 <script lang="ts">
     import LabeledCheckbox from "$lib/components/Form/Input/LabeledCheckbox.svelte";
-import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
+    import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { trpc } from "$lib/trpc";
 
     let name: string;
