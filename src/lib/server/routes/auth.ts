@@ -11,7 +11,7 @@ const getTokenUser = async (token: string) => {
     const user = await db
         .selectFrom("User")
         .where("id", "=", id)
-        .select(["id", "name", "email", "status"])
+        .select(["id", "name", "email", "status", "username"])
         .executeTakeFirst();
     if (!user) throw new Error("User not found");
     if (user.status !== Status.PENDING)

@@ -1,9 +1,11 @@
 import db from "$lib/db";
 import { TRPCError } from "@trpc/server";
-import { user } from "../middleware";
+import { owner, user } from "../middleware";
 import { router } from "../trpc";
 import { z } from "zod";
 import { comparePassword, hashPassword } from "$lib/util/password";
+import { createActivationToken } from "$lib/util/tokens";
+import { sendMailWithHTML } from "$lib/util/mail";
 
 export default router({
     me: user.query(async ({ ctx }) => {
@@ -72,5 +74,75 @@ export default router({
                 .set({ password: await hashPassword(newPassword) })
                 .where("id", "=", ctx.session.user.id)
                 .execute();
+        }),
+    create: owner
+        .input(
+            z.object({
+                name: z.string(),
+                username: z.string(),
+                email: z.string().email(),
+                dummy: z.boolean(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { dummy, ...data } = input;
+
+            const inserted = await db
+                .insertInto("User")
+                .values({ ...data, dummy: Number(dummy) })
+                .execute();
+            if (!inserted || inserted.length === 0)
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to create user.",
+                });
+
+            // Only send email to non-dummy users
+            if (dummy) return;
+
+            const id = Number(inserted[0]!.insertId);
+
+            const token = await createActivationToken(id);
+            const url = new URL(
+                `/auth/activate/${token}`,
+                ctx.event.url.origin,
+            );
+
+            await sendMailWithHTML(
+                input.email,
+                "Willkommen bei FeuerFest",
+                `<h1>Hallo ${input.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
+            );
+        }),
+    undummify: owner
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const { id } = input;
+            await db
+                .updateTable("User")
+                .set({ dummy: 0 })
+                .where("id", "=", id)
+                .execute();
+
+            const user = await db
+                .selectFrom("User")
+                .where("id", "=", id)
+                .select(["email", "name"])
+                .executeTakeFirst();
+
+            // Well ...
+            if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+            const token = await createActivationToken(id);
+            const url = new URL(
+                `/auth/activate/${token}`,
+                ctx.event.url.origin,
+            );
+
+            await sendMailWithHTML(
+                user.email,
+                "Willkommen bei FeuerFest",
+                `<h1>Hallo ${user.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
+            );
         }),
 });

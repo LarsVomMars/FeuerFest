@@ -17,16 +17,26 @@ export interface Event {
   slug: string;
 }
 
+export interface EventStaff {
+  id: Generated<number>;
+  role: Generated<"ADMIN" | "OWNER" | "USER">;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date | null>;
+  eventId: number;
+  userId: number;
+}
+
 export interface User {
   id: Generated<number>;
   email: string;
   name: string;
-  username: Generated<string>;
+  username: string;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   role: Generated<"ADMIN" | "OWNER" | "USER">;
   status: Generated<"ACTIVE" | "INACTIVE" | "PENDING">;
   password: Generated<string>;
+  dummy: Generated<number>;
 }
 
 export interface UserSession {
@@ -39,6 +49,7 @@ export interface UserSession {
 
 export interface DB {
   Event: Event;
+  EventStaff: EventStaff;
   User: User;
   UserSession: UserSession;
 }

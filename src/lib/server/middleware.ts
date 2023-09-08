@@ -32,3 +32,21 @@ const isAdmin = middleware(async ({ ctx, next }) => {
 });
 
 export const admin = procedure.use(isAdmin);
+
+const isOwner = middleware(async ({ ctx, next }) => {
+    const { session } = ctx;
+    if (!session)
+        throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "You must be logged in to do that.",
+        });
+    if (RoleValue[session.user.role] < RoleValue.OWNER)
+        throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "You must be an owner to do that.",
+        });
+
+    return next({ ctx: { ...ctx, session } });
+});
+
+export const owner = procedure.use(isOwner);

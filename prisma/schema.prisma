@@ -8,15 +8,18 @@ model User {
     id        Int       @id @default(autoincrement())
     email     String    @unique
     name      String
-    username  String    @unique @default("")
+    username  String    @unique
     password  String    @default("")
     role      Role      @default(USER)
     status    Status    @default(PENDING)
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt
 
+    dummy Boolean @default(false) // Pending user without an account
+
     UserSession UserSession[]
     Event       Event[]
+    EventStaff  EventStaff[]
 }
 
 // token insted of id?
@@ -43,6 +46,20 @@ model Event {
     createdBy   User      @relation(fields: [createdById], references: [id])
     updatedAt   DateTime? @updatedAt
     createdById Int
+
+    EventStaff EventStaff[]
+}
+
+model EventStaff {
+    id        Int       @id @default(autoincrement())
+    event     Event     @relation(fields: [eventId], references: [id])
+    user      User      @relation(fields: [userId], references: [id])
+    role      Role      @default(USER)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime? @updatedAt
+
+    eventId Int
+    userId  Int
 }
 
 enum Role {

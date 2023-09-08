@@ -23,6 +23,7 @@ export default router({
         .input(
             z.object({
                 name: z.string(),
+                username: z.string(),
                 email: z.string().email(),
             }),
         )
@@ -35,8 +36,7 @@ export default router({
             const result = await db
                 .insertInto("User")
                 .values({
-                    name: input.name,
-                    email: input.email,
+                    ...input,
                     role: Role.OWNER,
                 })
                 .execute();

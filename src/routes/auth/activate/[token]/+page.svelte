@@ -15,9 +15,10 @@
         },
     });
 
+    // TODO: this doesn't work??
     $: name = user?.name || "";
     $: email = user?.email || "";
-    let username = "";
+    $: username = user?.username || "";
     let password = "";
     let validatePassword = "";
 

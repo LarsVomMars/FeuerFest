@@ -4,6 +4,9 @@ import { router } from "$lib/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+const generateSlug = (name: string, start: Date) =>
+    `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
+
 export default router({
     listActive: user.query(async () => {
         const now = new Date();
@@ -48,7 +51,7 @@ export default router({
         )
         .mutation(async ({ ctx, input }) => {
             const { name, description, location, start, end } = input;
-            const slug = `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
+            const slug = generateSlug(name, start);
             await db
                 .insertInto("Event")
                 .values({
@@ -63,10 +66,40 @@ export default router({
                 .execute();
             return slug;
         }),
-    getBySlug: user.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
-        const {slug} = input;
-        const event = await db.selectFrom("Event").where("slug", "=", slug).selectAll().executeTakeFirst();
-        if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found." });
-        return event;
-    }),
+    getBySlug: user
+        .input(z.object({ slug: z.string() }))
+        .query(async ({ input }) => {
+            const { slug } = input;
+            const event = await db
+                .selectFrom("Event")
+                .where("slug", "=", slug)
+                .selectAll()
+                .executeTakeFirst();
+            if (!event)
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Event not found.",
+                });
+            return event;
+        }),
+    update: admin
+        .input(
+            z.object({
+                id: z.number(),
+                name: z.string(),
+                description: z.string(),
+                location: z.string(),
+                start: z.date(),
+                end: z.date(),
+            }),
+        )
+        .mutation(async ({ input }) => {
+            const { id, ...data } = input;
+            const slug = generateSlug(data.name, data.start);
+            await db
+                .updateTable("Event")
+                .set({ ...data, slug, updatedAt: new Date() })
+                .where("id", "=", id)
+                .execute();
+        }),
 });
