@@ -1,26 +1,24 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
+    import Form from "$lib/components/Form/Form.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
+    import Submit from "$lib/components/Form/Submit.svelte";
     import { trpc } from "$lib/trpc";
 
     let name: string;
     let description: string;
     let location: string;
-    let start: Date;
-    let end: Date;
+    let start: string;
+    let end: string;
 
-    let disabled = false;
+    let error = "";
 
     const createRequest = trpc.events.create.mutation({
-        onSuccess: (slug) => {
-            // TODO: Redirect
-            console.log(slug);
-        },
+        onSuccess: (slug) => goto(`/events/${slug}`),
+        onError: (err) => (error = err.message),
     });
 
     const submit = () => {
-        if (disabled) return;
-        disabled = true;
-
         $createRequest.mutate({
             name,
             description,
@@ -31,25 +29,27 @@
     };
 </script>
 
-<h1 class="text-4xl font-black">Neue Veranstaltung</h1>
+<h1 class="text-4xl font-bold">Neue Veranstaltung</h1>
 
-<form
-    class="m-4 w-[40%] max-w-[32rem] gap-4 space-y-8 p-4"
-    autocomplete="off"
-    on:submit|preventDefault|stopPropagation={submit}
->
-    <LabeledInput label="Name" bind:value={name} />
-    <LabeledInput label="Beschreibung" bind:value={description} />
-    <LabeledInput label="Ort" bind:value={location} />
-    <LabeledInput label="Start" type="datetime-local" bind:value={start} />
-    <LabeledInput label="Ende" type="datetime-local" bind:value={end} />
-    <div>
-        <button
-            type="submit"
-            class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed disabled:bg-ffblue-dark"
-            {disabled}
-        >
-            Erstellen
-        </button>
-    </div>
-</form>
+<Form {submit} {error}>
+    <LabeledInput label="Name" bind:value={name} required={true} />
+    <LabeledInput
+        label="Beschreibung"
+        bind:value={description}
+        required={true}
+    />
+    <LabeledInput label="Ort" bind:value={location} required={true} />
+    <LabeledInput
+        label="Start"
+        type="datetime-local"
+        bind:value={start}
+        required={true}
+    />
+    <LabeledInput
+        label="Ende"
+        type="datetime-local"
+        bind:value={end}
+        required={true}
+    />
+    <Submit label="Erstellen" />
+</Form>

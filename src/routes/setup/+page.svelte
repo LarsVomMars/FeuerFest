@@ -1,12 +1,17 @@
 <script lang="ts">
+    import Form from "$lib/components/Form/Form.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
+    import Submit from "$lib/components/Form/Submit.svelte";
     import { trpc } from "$lib/trpc";
+
+    let error = "";
 
     const createUser = trpc.setup.createUser.mutation({
         onSuccess: () => {
             trpc.setup.isSetup.utils.invalidate();
             trpc.setup.isSetup.query();
         },
+        onError: (err) => (error = err.message),
     });
 
     let name = "";
@@ -22,23 +27,16 @@
     };
 </script>
 
-<h1 class="text-4xl font-black">Setup</h1>
+<h1 class="text-4xl font-bold">Setup</h1>
 
-<form
-    class="m-4 w-[40%] max-w-[32rem] gap-4 space-y-8 p-4"
-    autocomplete="off"
-    on:submit|preventDefault|stopPropagation={submit}
->
-    <LabeledInput label="Name" bind:value={name} />
-    <LabeledInput label="Username" bind:value={username} />
-    <LabeledInput label="Email" bind:value={email} type="email" />
-    <div>
-        <button
-            type="submit"
-            class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed disabled:bg-ffblue-dark"
-            {disabled}
-        >
-            Setup
-        </button>
-    </div>
-</form>
+<Form {submit} {error}>
+    <LabeledInput label="Name" bind:value={name} required={true} />
+    <LabeledInput label="Username" bind:value={username} required={true} />
+    <LabeledInput
+        label="Email"
+        bind:value={email}
+        type="email"
+        required={true}
+    />
+    <Submit label="Erstellen" />
+</Form>

@@ -1,36 +1,58 @@
 <script lang="ts">
+    import Form from "$lib/components/Form/Form.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
+    import Submit from "$lib/components/Form/Submit.svelte";
     import { trpc } from "$lib/trpc";
 
     let currentPassword = "";
     let newPassword = "";
     let validateNewPassword = "";
 
-    const updateRequest = trpc.users.updatePassword.mutation();
+    let error = "";
 
-    const updatePassword = () => {
+    const updateRequest = trpc.users.updatePassword.mutation({
+        onError: (err) => (error = err.message),
+    });
+
+    const submit = () => {
         $updateRequest.mutate({
             currentPassword,
             newPassword,
             validateNewPassword,
         });
     };
+
+    const passwordValidator = (value: string | undefined) => {
+        if (value && value.length < 8)
+            return "Das Passwort muss mindestens 8 Zeichen lang sein";
+        if (newPassword !== validateNewPassword)
+            return "Die Passwörter stimmen nicht überein";
+    };
+
+    const minLengthValidator = (value: string | undefined) => {
+        if (value && value.length < 8)
+            return "Das Passwort muss mindestens 8 Zeichen lang sein";
+    };
 </script>
 
-<form
-    class="m-4 w-[40%] max-w-[32rem] gap-4 space-y-8 p-4"
-    autocomplete="off"
-    on:submit|preventDefault|stopPropagation={updatePassword}
->
-    <LabeledInput label="Altes Passwort" bind:value={currentPassword} />
-    <LabeledInput label="Neues Passwort" bind:value={newPassword} />
+<Form {submit} {error}>
+    <LabeledInput
+        label="Altes Passwort"
+        bind:value={currentPassword}
+        required={true}
+        validator={minLengthValidator}
+    />
+    <LabeledInput
+        label="Neues Passwort"
+        bind:value={newPassword}
+        required={true}
+        validator={passwordValidator}
+    />
     <LabeledInput
         label="Neues Passwort wiederholen"
         bind:value={validateNewPassword}
+        required={true}
+        validator={passwordValidator}
     />
-    <div class="flex flex-row justify-between gap-x-2">
-        <button class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed">
-            Ändern
-        </button>
-    </div>
-</form>
+    <Submit label="Ändern" />
+</Form>

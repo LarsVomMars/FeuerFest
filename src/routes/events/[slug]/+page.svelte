@@ -8,7 +8,7 @@
 </script>
 
 {#if $eventRequest.isSuccess}
-    <h1 class="text-4xl font-black">{event.name}</h1>
+    <h1 class="text-4xl font-bold">{event.name}</h1>
     <p class="text-xl">{event.description}</p>
     <p class="text-xl">{event.location}</p>
     <p class="text-xl">{event.start.toLocaleString()}</p>

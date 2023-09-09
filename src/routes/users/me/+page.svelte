@@ -1,9 +1,15 @@
 <script lang="ts">
+    import Form from "$lib/components/Form/Form.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { trpc } from "$lib/trpc";
 
     const meRequest = trpc.users.me.query();
-    const updateRequest = trpc.users.updateMe.mutation();
+    const updateRequest = trpc.users.updateMe.mutation({
+        onSuccess: () => {
+            $meRequest.refetch();
+        },
+        onError: (err) => (error = err.message),
+    });
 
     $: id = $meRequest.data?.id!;
     let name = "";
@@ -11,6 +17,7 @@
     let email = "";
 
     let fetched = false;
+    let error = "";
 
     $: if ($meRequest.isSuccess && !fetched) {
         name = $meRequest.data?.name;
@@ -39,22 +46,25 @@
 <h1 class="text-4xl font-bold">Benutzer</h1>
 
 {#key $meRequest.isFetching}
-    <form
-        class="m-4 w-[40%] max-w-[32rem] gap-4 space-y-8 p-4"
-        autocomplete="off"
-        on:submit|preventDefault|stopPropagation
-    >
-        <LabeledInput label="Name" bind:value={name} bind:disabled />
+    <Form submit={() => {}} {error}>
+        <LabeledInput
+            label="Name"
+            bind:value={name}
+            {disabled}
+            required={true}
+        />
         <LabeledInput
             label="Benutzername"
             bind:value={username}
-            bind:disabled
+            {disabled}
+            required={true}
         />
         <LabeledInput
             label="E-Mail"
             bind:value={email}
             type="email"
-            bind:disabled
+            {disabled}
+            required={true}
         />
         <div class="flex flex-col gap-4">
             <div class="flex flex-row justify-between gap-x-2">
@@ -81,5 +91,5 @@
                 Passwort ändern
             </a>
         </div>
-    </form>
+    </Form>
 {/key}

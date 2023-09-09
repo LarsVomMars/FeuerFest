@@ -11,7 +11,7 @@
     const pastRequest = trpc.events.listPast.query();
 </script>
 
-<h1 class="text-4xl font-black">Veranstaltungen</h1>
+<h1 class="text-4xl font-bold">Veranstaltungen</h1>
 
 <div
     class="mt-4 flex flex-col justify-center items-center w-5/6 md:w-1/2 gap-4"
@@ -55,7 +55,8 @@
         <a
             href="/events/new"
             class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed disabled:bg-ffblue-dark text-center"
-            >Neu</a
         >
+            Neu
+        </a>
     {/if}
 </div>

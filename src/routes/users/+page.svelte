@@ -1,4 +1,4 @@
-<h1 class="text-4xl font-black">Benutzer</h1>
+<h1 class="text-4xl font-bold">Benutzer</h1>
 
 <a
     href="/users/new"
