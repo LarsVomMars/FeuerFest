@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import Form from "$lib/components/Form/Form.svelte";
     import LabeledCheckbox from "$lib/components/Form/Input/LabeledCheckbox.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
@@ -13,6 +14,7 @@
     let error = "";
 
     const createRequest = trpc.users.create.mutation({
+        onSuccess: (userId) => goto(`/users/${userId}`),
         onError: (err) => (error = err.message),
     });
 

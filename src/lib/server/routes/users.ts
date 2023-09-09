@@ -98,7 +98,7 @@ export default router({
                 });
 
             // Only send email to non-dummy users
-            if (dummy) return;
+            if (dummy) return inserted[0]!.insertId;
 
             const id = Number(inserted[0]!.insertId);
 
@@ -113,6 +113,7 @@ export default router({
                 "Willkommen bei FeuerFest",
                 `<h1>Hallo ${input.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
             );
+            return inserted[0]!.insertId;
         }),
     undummify: owner
         .input(z.object({ id: z.number() }))
@@ -145,4 +146,21 @@ export default router({
                 `<h1>Hallo ${user.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
             );
         }),
+    list: owner.query(async () => {
+        return await db
+            .selectFrom("User")
+            .orderBy("name")
+            .select(["id", "name", "email", "username", "dummy"])
+            .execute()!;
+    }),
+    get: owner.input(z.object({ id: z.number() })).query(async ({ input }) => {
+        const { id } = input;
+        const user = await db
+            .selectFrom("User")
+            .where("id", "=", id)
+            .select(["id", "name", "email", "username", "dummy", "status"])
+            .executeTakeFirst();
+        if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+        return user;
+    }),
 });
