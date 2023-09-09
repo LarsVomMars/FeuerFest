@@ -34,7 +34,7 @@
             class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed disabled:bg-ffblue-dark"
             {disabled}
         >
-            Setup
+            Benutzer erstellen
         </button>
     </div>
 </form>

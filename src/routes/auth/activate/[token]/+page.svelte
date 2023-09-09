@@ -7,20 +7,26 @@
     let token = $page.params.token || "";
 
     const userRequest = trpc.auth.validateToken.query({ token });
-    $: user = $userRequest.data?.user;
-
     const activateRequest = trpc.auth.activate.mutation({
         onSuccess: () => {
             goto("/auth/login");
         },
     });
 
-    // TODO: this doesn't work??
-    $: name = user?.name || "";
-    $: email = user?.email || "";
-    $: username = user?.username || "";
+    let fetched = false;
+
+    let name = "";
+    let username = "";
+    let email = "";
     let password = "";
     let validatePassword = "";
+
+    if ($userRequest.isSuccess && !fetched) {
+        fetched = true;
+        name = $userRequest.data?.name;
+        username = $userRequest.data?.username;
+        email = $userRequest.data?.email;
+    }
 
     let disabled = false;
 

@@ -19,7 +19,7 @@ export interface Event {
 
 export interface EventStaff {
   id: Generated<number>;
-  role: Generated<"ADMIN" | "OWNER" | "USER">;
+  role: Generated<unknown>;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   eventId: number;
@@ -31,11 +31,11 @@ export interface User {
   email: string;
   name: string;
   username: string;
+  password: Generated<string>;
+  role: Generated<unknown>;
+  status: Generated<unknown>;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
-  role: Generated<"ADMIN" | "OWNER" | "USER">;
-  status: Generated<"ACTIVE" | "INACTIVE" | "PENDING">;
-  password: Generated<string>;
   dummy: Generated<number>;
 }
 

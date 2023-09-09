@@ -25,7 +25,7 @@ export default router({
         .query(async ({ input: { token } }) => {
             try {
                 const user = await getTokenUser(token);
-                return { user };
+                return user;
             } catch (e) {
                 console.error(e);
                 throw new TRPCError({

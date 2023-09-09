@@ -7,7 +7,7 @@
 
     $: id = $meRequest.data?.id!;
     let name = "";
-    let username = ""; // TODO: Make non-nullable
+    let username = "";
     let email = "";
 
     let fetched = false;
@@ -36,7 +36,7 @@
     $: disabled = !edit;
 </script>
 
-<h1 class="text-4xl font-black">Benutzer</h1>
+<h1 class="text-4xl font-bold">Benutzer</h1>
 
 {#key $meRequest.isFetching}
     <form
