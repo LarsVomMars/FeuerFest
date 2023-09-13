@@ -3,7 +3,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// TODO: Non-Nullable and insert empty string as default
 model User {
     id        Int       @id @default(autoincrement())
     email     String    @unique

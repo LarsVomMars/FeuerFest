@@ -11,6 +11,8 @@ export const load: PageServerLoad = async (event) => {
     const id = Number(event.params.id);
     if (isNaN(id)) throw redirect(302, "/users");
 
+    // if (id === session!.user.id) throw redirect(302, "/users/me");
+
     try {
         await trpcServer.users.get.ssr({ id }, event);
     } catch (e) {

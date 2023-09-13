@@ -13,6 +13,11 @@ module.exports = {
                     dimmed: "#4993cc",
                     dark: "#4080b2",
                 },
+                ffgreen: {
+                    DEFAULT: "#03c603",
+                    dimmed: "#02a802",
+                    dark: "#039903",
+                },
                 ffdark: {
                     DEFAULT: "#363636",
                 },

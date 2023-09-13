@@ -6,6 +6,23 @@ import { z } from "zod";
 import { comparePassword, hashPassword } from "$lib/util/password";
 import { createActivationToken } from "$lib/util/tokens";
 import { sendMailWithHTML } from "$lib/util/mail";
+import { Status } from "$lib/db/types";
+
+const sendActivationMail = async (
+    id: number,
+    base: string,
+    email: string,
+    name: string,
+) => {
+    const token = createActivationToken(id);
+    const url = new URL(`/auth/activate/${token}`, base);
+
+    await sendMailWithHTML(
+        email,
+        "Willkommen bei FeuerFest",
+        `<h1>Hallo ${name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
+    );
+};
 
 export default router({
     me: user.query(async ({ ctx }) => {
@@ -101,17 +118,11 @@ export default router({
             if (dummy) return inserted[0]!.insertId;
 
             const id = Number(inserted[0]!.insertId);
-
-            const token = await createActivationToken(id);
-            const url = new URL(
-                `/auth/activate/${token}`,
+            await sendActivationMail(
+                id,
                 ctx.event.url.origin,
-            );
-
-            await sendMailWithHTML(
-                input.email,
-                "Willkommen bei FeuerFest",
-                `<h1>Hallo ${input.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
+                data.email,
+                data.name,
             );
             return inserted[0]!.insertId;
         }),
@@ -119,32 +130,81 @@ export default router({
         .input(z.object({ id: z.number() }))
         .mutation(async ({ ctx, input }) => {
             const { id } = input;
+
+            const user = await db
+                .selectFrom("User")
+                .where("id", "=", id)
+                .select(["email", "name", "status", "dummy"])
+                .executeTakeFirst();
+
+            if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+            if (!user.dummy || user.status !== Status.PENDING)
+                throw new TRPCError({ code: "BAD_REQUEST" });
+
             await db
                 .updateTable("User")
                 .set({ dummy: 0 })
                 .where("id", "=", id)
                 .execute();
 
+            await sendActivationMail(
+                id,
+                ctx.event.url.origin,
+                user.email,
+                user.name,
+            );
+        }),
+    activate: owner
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const { id } = input;
+
             const user = await db
                 .selectFrom("User")
                 .where("id", "=", id)
-                .select(["email", "name"])
+                .select(["email", "name", "status", "dummy", "password"])
                 .executeTakeFirst();
 
-            // Well ...
             if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+            if (user.dummy || user.status === Status.ACTIVE)
+                throw new TRPCError({ code: "BAD_REQUEST" });
 
-            const token = await createActivationToken(id);
-            const url = new URL(
-                `/auth/activate/${token}`,
-                ctx.event.url.origin,
-            );
+            await db
+                .updateTable("User")
+                .set({ status: Status.ACTIVE })
+                .where("id", "=", id)
+                .execute();
 
-            await sendMailWithHTML(
-                user.email,
-                "Willkommen bei FeuerFest",
-                `<h1>Hallo ${user.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
-            );
+            // Resend activation email if user has no password -> not initialized yet
+            if (!user.password) {
+                await sendActivationMail(
+                    id,
+                    ctx.event.url.origin,
+                    user.email,
+                    user.name,
+                );
+            }
+        }),
+    deactivate: owner
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+            const { id } = input;
+
+            const user = await db
+                .selectFrom("User")
+                .where("id", "=", id)
+                .select(["email", "name", "status", "dummy"])
+                .executeTakeFirst();
+
+            if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+            if (user.dummy || user.status !== Status.ACTIVE)
+                throw new TRPCError({ code: "BAD_REQUEST" });
+
+            await db
+                .updateTable("User")
+                .set({ status: Status.INACTIVE })
+                .where("id", "=", id)
+                .execute();
         }),
     list: owner.query(async () => {
         return await db
@@ -158,7 +218,15 @@ export default router({
         const user = await db
             .selectFrom("User")
             .where("id", "=", id)
-            .select(["id", "name", "email", "username", "dummy", "status"])
+            .select([
+                "id",
+                "name",
+                "email",
+                "username",
+                "dummy",
+                "status",
+                "role",
+            ])
             .executeTakeFirst();
         if (!user) throw new TRPCError({ code: "NOT_FOUND" });
         return user;
