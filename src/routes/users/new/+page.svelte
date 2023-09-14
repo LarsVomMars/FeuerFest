@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import Form from "$lib/components/Form/Form.svelte";
-    import LabeledCheckbox from "$lib/components/Form/Input/LabeledCheckbox.svelte";
+    import LabeledToggle from "$lib/components/Form/Input/LabeledToggle.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import Submit from "$lib/components/Form/Submit.svelte";
     import { trpc } from "$lib/trpc";
@@ -33,7 +33,7 @@
         type="email"
         required={true}
     />
-    <LabeledCheckbox label="Dummy Benutzer" bind:checked={dummy} />
+    <LabeledToggle label="Dummy Benutzer" bind:checked={dummy} />
 
     <Submit label="Erstellen" />
 </Form>

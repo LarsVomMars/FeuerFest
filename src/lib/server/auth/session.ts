@@ -5,7 +5,7 @@ export type SessionUser = {
     username: string;
     name: string;
     email: string;
-    role: Role; // TODO: Use RoleValue instead?
+    role: Role; // NOTE: Use RoleValue instead?
 };
 
 export type Session = {
