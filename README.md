@@ -1,18 +1,10 @@
 # FeuerFest
 A basic eventing system i created for my local fire department
 
+To initialize visit `/setup`
+
 ## Environment
 Example [.env](/.env.example)
-```js
-DATABASE_URL="mysql://user:password@host:port/database"
-
-EMAIL_FROM="<sender> email@host"
-EMAIL_HOST="host"
-EMAIL_USER="user"
-EMAIL_PASSWORD="password"
-
-SIGNING_KEY="signing key for paseto tokens (optional)"
-```
 
 ## Deployment
 ### Local

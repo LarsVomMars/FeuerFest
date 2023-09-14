@@ -51,7 +51,6 @@
             </button>
         {/if}
 
-        <!-- TODO: Dont disable yourself -->
         {#if user.status === Status.ACTIVE && user.role !== Role.OWNER}
             <button
                 class="w-full rounded-lg bg-ffred p-2 hover:bg-ffred-dimmed"

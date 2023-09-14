@@ -8,13 +8,13 @@ import { createActivationToken } from "$lib/util/tokens";
 import { sendMailWithHTML } from "$lib/util/mail";
 import { Status } from "$lib/db/types";
 
-const sendActivationMail = async (
+export const sendActivationMail = async (
     id: number,
     base: string,
     email: string,
     name: string,
 ) => {
-    const token = createActivationToken(id);
+    const token = await createActivationToken(id);
     const url = new URL(`/auth/activate/${token}`, base);
 
     await sendMailWithHTML(

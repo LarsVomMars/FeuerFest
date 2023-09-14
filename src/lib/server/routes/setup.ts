@@ -3,8 +3,7 @@ import { z } from "zod";
 import db from "$lib/db";
 import { Role } from "$lib/db/types";
 import { TRPCError } from "@trpc/server";
-import { sendMailWithHTML } from "$lib/util/mail";
-import { createActivationToken } from "$lib/util/tokens";
+import { sendActivationMail } from "./users";
 
 export const isSetup = async () => {
     const users = await db.selectFrom("User").selectAll().executeTakeFirst();
@@ -46,17 +45,11 @@ export default router({
 
             const userId = Number(result[0]?.insertId);
             if (!userId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-
-            const token = await createActivationToken(userId);
-            const url = new URL(
-                `/auth/activate/${token}`,
+            await sendActivationMail(
+                userId,
                 ctx.event.url.origin,
-            );
-
-            await sendMailWithHTML(
                 input.email,
-                "Willkommen bei FeuerFest",
-                `<h1>Hallo ${input.name},</h1><p>Willkommen bei FeuerFest!<br/>Bitte bestätige deine Email:<br/> <a href="${url}"><button>Bestätigen</button></a></p>`,
+                input.name,
             );
         }),
 });

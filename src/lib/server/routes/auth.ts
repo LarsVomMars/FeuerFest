@@ -11,11 +11,12 @@ const getTokenUser = async (token: string) => {
     const user = await db
         .selectFrom("User")
         .where("id", "=", id)
-        .select(["id", "name", "email", "status", "username"])
+        .select(["id", "name", "email", "status", "username", "password"])
         .executeTakeFirst();
     if (!user) throw new Error("User not found");
-    if (user.status !== Status.PENDING)
+    if (user.status !== Status.PENDING && user.password)
         throw new Error("User already activated");
+    user.password = "";
     return user;
 };
 
