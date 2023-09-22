@@ -4,7 +4,7 @@ import { owner, user } from "../middleware";
 import { router } from "../trpc";
 import { z } from "zod";
 import { comparePassword, hashPassword } from "$lib/util/password";
-import { createActivationToken } from "$lib/util/tokens";
+import { TokenTypes, createToken } from "$lib/util/tokens";
 import { sendMailWithHTML } from "$lib/util/mail";
 import { Status } from "$lib/db/types";
 
@@ -14,7 +14,7 @@ export const sendActivationMail = async (
     email: string,
     name: string,
 ) => {
-    const token = await createActivationToken(id);
+    const token = await createToken(id, email, TokenTypes.ACTIVATION);
     const url = new URL(`/auth/activate/${token}`, base);
 
     await sendMailWithHTML(
@@ -231,4 +231,33 @@ export default router({
         if (!user) throw new TRPCError({ code: "NOT_FOUND" });
         return user;
     }),
+    requestReset: owner
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const { id } = input;
+
+            const user = await db
+                .selectFrom("User")
+                .where("id", "=", id)
+                .select(["email", "name", "status", "dummy"])
+                .executeTakeFirst();
+
+            if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+            if (user.dummy || user.status !== Status.ACTIVE)
+                throw new TRPCError({ code: "BAD_REQUEST" });
+
+            const token = await createToken(
+                id,
+                user.email,
+                TokenTypes.RESET,
+                "4h",
+            );
+            const url = new URL(`/auth/reset/${token}`, ctx.event.url.origin);
+
+            await sendMailWithHTML(
+                user.email,
+                "Passwort zurücksetzen",
+                `<h1>Hallo ${user.name},</h1><p>Bitte setze dein Passwort zurück:<br/> <a href="${url}"><button>Passwort zurücksetzen</button></a></p>`,
+            );
+        }),
 });

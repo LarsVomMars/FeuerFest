@@ -7,23 +7,32 @@ const SIGNING_KEY = Buffer.from(
     env.SIGNING_KEY || randomBytes(32).toString("hex"),
     "hex",
 );
-const SIGNING_OPTIONS = {
-    expiresIn: "1d",
+
+const createSigningOptions = (expires = "1d") => ({
+    expiresIn: expires,
     issuer: "FeuerFest",
     audience: "urn:feuerfest:client",
-};
+});
 
-const encrypt = <T extends Record<string, unknown>>(data: T) =>
-    V3.encrypt(data, SIGNING_KEY, SIGNING_OPTIONS);
+export type TokenType = "activation" | "reset";
+export enum TokenTypes {
+    ACTIVATION = "activation",
+    RESET = "reset",
+}
 
-const decrypt = <T extends Record<string, unknown>>(token: string) =>
-    V3.decrypt<T>(token, SIGNING_KEY, SIGNING_OPTIONS);
-
-export const createActivationToken = (id: number) =>
-    encrypt<ActivationToken>({ id });
-export const verifyActivationToken = (token: string) =>
-    decrypt<ActivationToken>(token);
-
-export type ActivationToken = {
+export type Token = {
+    type: TokenType;
     id: number;
+    email: string;
 };
+
+export const createToken = (
+    id: number,
+    email: string,
+    type: TokenType,
+    expires = "1d",
+) =>
+    V3.encrypt({ id, email, type }, SIGNING_KEY, createSigningOptions(expires));
+
+export const verifyToken = (token: string, expires = "1d") =>
+    V3.decrypt<Token>(token, SIGNING_KEY, createSigningOptions(expires));

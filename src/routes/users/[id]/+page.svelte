@@ -17,11 +17,16 @@
         onSuccess: () => $userRequest.refetch(),
     });
 
+    const passwordResetRequest = trpc.users.requestReset.mutation({
+        onSuccess: () => $userRequest.refetch(),
+    });
+
     $: user = $userRequest.data!;
 
     const undummify = () => $undummifyRequest.mutate({ id: user.id });
     const activate = () => $activateRequest.mutate({ id: user.id });
     const deactivate = () => $deactivateRequest.mutate({ id: user.id });
+    const requestReset = () => $passwordResetRequest.mutate({ id: user.id });
 </script>
 
 {#if $userRequest.isSuccess && user}
@@ -57,6 +62,15 @@
                 on:click={deactivate}
             >
                 Deaktivieren
+            </button>
+        {/if}
+
+        {#if user.status === Status.ACTIVE}
+            <button
+                class="w-full rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed"
+                on:click={requestReset}
+            >
+                Passwort zurücksetzen
             </button>
         {/if}
     </div>
