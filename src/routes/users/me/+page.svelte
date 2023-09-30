@@ -47,24 +47,19 @@
 
 {#key $meRequest.isFetching}
     <Form submit={() => {}} {error}>
-        <LabeledInput
-            label="Name"
-            bind:value={name}
-            {disabled}
-            required={true}
-        />
+        <LabeledInput label="Name" bind:value={name} {disabled} required />
         <LabeledInput
             label="Benutzername"
             bind:value={username}
             {disabled}
-            required={true}
+            required
         />
         <LabeledInput
             label="E-Mail"
             bind:value={email}
             type="email"
             {disabled}
-            required={true}
+            required
         />
         <div class="flex flex-col gap-4">
             <div class="flex flex-row justify-between gap-x-2">

@@ -25,14 +25,9 @@
 
 <h1 class="font-bold text-4xl">Neuer Benutzer</h1>
 <Form {submit} {error}>
-    <LabeledInput label="Name" bind:value={name} required={true} />
-    <LabeledInput label="Benutzername" bind:value={username} required={true} />
-    <LabeledInput
-        label="Email"
-        bind:value={email}
-        type="email"
-        required={true}
-    />
+    <LabeledInput label="Name" bind:value={name} required />
+    <LabeledInput label="Benutzername" bind:value={username} required />
+    <LabeledInput label="Email" bind:value={email} type="email" required />
     <LabeledToggle label="Dummy Benutzer" bind:checked={dummy} />
 
     <Submit label="Erstellen" />

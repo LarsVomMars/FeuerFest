@@ -39,19 +39,19 @@
     <LabeledInput
         label="Altes Passwort"
         bind:value={currentPassword}
-        required={true}
+        required
         validator={minLengthValidator}
     />
     <LabeledInput
         label="Neues Passwort"
         bind:value={newPassword}
-        required={true}
+        required
         validator={passwordValidator}
     />
     <LabeledInput
         label="Neues Passwort wiederholen"
         bind:value={validateNewPassword}
-        required={true}
+        required
         validator={passwordValidator}
     />
     <Submit label="Ändern" />

@@ -30,13 +30,8 @@
 <h1 class="text-4xl font-bold">Setup</h1>
 
 <Form {submit} {error}>
-    <LabeledInput label="Name" bind:value={name} required={true} />
-    <LabeledInput label="Username" bind:value={username} required={true} />
-    <LabeledInput
-        label="Email"
-        bind:value={email}
-        type="email"
-        required={true}
-    />
+    <LabeledInput label="Name" bind:value={name} required />
+    <LabeledInput label="Username" bind:value={username} required />
+    <LabeledInput label="Email" bind:value={email} type="email" required />
     <Submit label="Erstellen" />
 </Form>

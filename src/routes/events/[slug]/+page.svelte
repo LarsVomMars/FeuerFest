@@ -4,10 +4,10 @@
 
     const slug = $page.params.slug!;
     const eventRequest = trpc.events.getBySlug.query({ slug });
-    $: event = $eventRequest.data!;
+    $: event = $eventRequest.data;
 </script>
 
-{#if $eventRequest.isSuccess}
+{#if $eventRequest.isSuccess && event}
     <h1 class="text-4xl font-bold">{event.name}</h1>
     <p class="text-xl">{event.description}</p>
     <p class="text-xl">{event.location}</p>

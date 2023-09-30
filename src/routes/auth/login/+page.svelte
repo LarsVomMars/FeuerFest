@@ -23,12 +23,12 @@
 <h1 class="text-4xl font-bold">Anmelden</h1>
 
 <Form {submit} {error}>
-    <LabeledInput label="Benutzername" bind:value={username} required={true} />
+    <LabeledInput label="Benutzername" bind:value={username} required />
     <LabeledInput
         label="Passwort"
         bind:value={password}
         type="password"
-        required={true}
+        required
     />
     <Submit label="Anmelden" />
 </Form>

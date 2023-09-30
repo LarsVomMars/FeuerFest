@@ -32,24 +32,20 @@
 <h1 class="text-4xl font-bold">Neue Veranstaltung</h1>
 
 <Form {submit} {error}>
-    <LabeledInput label="Name" bind:value={name} required={true} />
-    <LabeledInput
-        label="Beschreibung"
-        bind:value={description}
-        required={true}
-    />
-    <LabeledInput label="Ort" bind:value={location} required={true} />
+    <LabeledInput label="Name" bind:value={name} required />
+    <LabeledInput label="Beschreibung" bind:value={description} required />
+    <LabeledInput label="Ort" bind:value={location} required />
     <LabeledInput
         label="Start"
         type="datetime-local"
         bind:value={start}
-        required={true}
+        required
     />
     <LabeledInput
         label="Ende"
         type="datetime-local"
         bind:value={end}
-        required={true}
+        required
     />
     <Submit label="Erstellen" />
 </Form>

@@ -51,7 +51,15 @@ export default router({
         )
         .mutation(async ({ ctx, input }) => {
             const { name, description, location, start, end } = input;
-            const slug = generateSlug(name, start);
+            let slug = generateSlug(name, start);
+            const events = await db
+                .selectFrom("Event")
+                .where("slug", "=", slug)
+                .select("id")
+                .execute();
+
+            if (events.length > 0) slug += `-${events.length + 1}`;
+
             await db
                 .insertInto("Event")
                 .values({

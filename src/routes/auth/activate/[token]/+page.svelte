@@ -54,26 +54,21 @@
 <h1 class="text-4xl font-bold">Aktivieren</h1>
 
 <Form {submit} {error}>
-    <LabeledInput label="Name" bind:value={name} required={true} />
-    <LabeledInput label="Benutzername" bind:value={username} required={true} />
-    <LabeledInput
-        label="Email"
-        bind:value={email}
-        type="email"
-        required={true}
-    />
+    <LabeledInput label="Name" bind:value={name} required />
+    <LabeledInput label="Benutzername" bind:value={username} required />
+    <LabeledInput label="Email" bind:value={email} type="email" required />
     <LabeledInput
         label="Passwort"
         bind:value={password}
         type="password"
-        required={true}
+        required
         validator={passwordValidator}
     />
     <LabeledInput
         label="Passwort bestätigen"
         bind:value={validatePassword}
         type="password"
-        required={true}
+        required
         validator={passwordValidator}
     />
     <Submit label="Aktivieren" />
