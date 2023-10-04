@@ -14,7 +14,7 @@ const createEventQuery = (user: SessionUser) => {
     let query = db
         .selectFrom("Event")
         .leftJoin("EventStaff", "Event.id", "EventStaff.eventId")
-        .selectAll()
+        .selectAll("Event")
         .distinct();
     if (user.role !== Role.OWNER) query = query.where("userId", "=", user.id);
     return query;

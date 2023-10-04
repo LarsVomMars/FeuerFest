@@ -9,8 +9,12 @@
 
 {#if $eventRequest.isSuccess && event}
     <h1 class="text-4xl font-bold">{event.name}</h1>
-    <p class="text-xl">{event.description}</p>
-    <p class="text-xl">{event.location}</p>
-    <p class="text-xl">{event.start.toLocaleString()}</p>
-    <p class="text-xl">{event.end.toLocaleString()}</p>
+    <div class="text-center">
+        <p class="text-xl">{event.description}</p>
+        <p class="text-xl">{event.location}</p>
+        <p class="text-xl">{event.start.toLocaleString()}</p>
+        <p class="text-xl">{event.end.toLocaleString()}</p>
+    </div>
 {/if}
+
+<a href="/events/{slug}/staff">Personal</a>
