@@ -3,39 +3,47 @@ import { admin, user } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import staff from "./staff";
+import { Role } from "$lib/db/types";
+import type { SessionUser } from "$lib/server/auth/session";
 
 const generateSlug = (name: string, start: Date) =>
     `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
 
+const createEventQuery = (user: SessionUser) => {
+    let query = db
+        .selectFrom("Event")
+        .leftJoin("EventStaff", "Event.id", "EventStaff.eventId")
+        .selectAll()
+        .distinct();
+    if (user.role !== Role.OWNER) query = query.where("userId", "=", user.id);
+    return query;
+};
+
 export default router({
-    listActive: user.query(async () => {
+    staff,
+    listActive: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("start", "<=", now)
             .where("end", ">=", now)
             .orderBy("start", "asc")
-            .selectAll()
             .execute();
         return events;
     }),
-    listPast: user.query(async () => {
+    listPast: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("end", "<", now)
             .orderBy("start", "desc")
-            .selectAll()
             .execute();
         return events;
     }),
-    listUpcoming: user.query(async () => {
+    listUpcoming: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("start", ">", now)
             .orderBy("start", "asc")
-            .selectAll()
             .execute();
         return events;
     }),
@@ -76,12 +84,10 @@ export default router({
         }),
     getBySlug: user
         .input(z.object({ slug: z.string() }))
-        .query(async ({ input }) => {
+        .query(async ({ ctx, input }) => {
             const { slug } = input;
-            const event = await db
-                .selectFrom("Event")
+            const event = await createEventQuery(ctx.session.user)
                 .where("slug", "=", slug)
-                .selectAll()
                 .executeTakeFirst();
             if (!event)
                 throw new TRPCError({
