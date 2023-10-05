@@ -12,12 +12,13 @@
     export let onChange: (value: string) => void;
 
     let edit = false;
+    let select: HTMLSelectElement;
 
     let prevValue = value;
 
     const click = () => {
         if (edit) return;
-        if (options.some((o) => o.disabled)) return;
+        if (getCurrentOption()?.disabled) return;
         edit = true;
     };
 
@@ -34,6 +35,10 @@
             else click();
         }
     };
+
+    const getCurrentOption = () => {
+        return options.find((v) => v.value === value);
+    };
 </script>
 
 <div
@@ -45,7 +50,12 @@
 >
     {#if edit}
         <div class="w-full">
-            <select on:blur={blur} bind:value class="bg-transparent w-full">
+            <select
+                on:blur={blur}
+                bind:this={select}
+                bind:value
+                class="bg-transparent w-full"
+            >
                 {#each options as option}
                     <option value={option.value} disabled={option.disabled}>
                         {option.label}
@@ -54,6 +64,6 @@
             </select>
         </div>
     {:else}
-        <TextCell value={options.find((v) => v.value === value)?.label || ""} />
+        <TextCell value={getCurrentOption()?.label || ""} />
     {/if}
 </div>

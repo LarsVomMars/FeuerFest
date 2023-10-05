@@ -16,6 +16,22 @@
         event,
     });
 
+    const addRequest = trpc.events.staff.add.mutation({
+        onSuccess: () => {
+            $staffRequest.refetch();
+            userId = undefined;
+            role = Role.USER;
+        },
+        onError: (err) => console.error(err.message),
+    });
+
+    const updateRequest = trpc.events.staff.update.mutation({
+        onSuccess: () => {
+            $staffRequest.refetch();
+        },
+        onError: (err) => console.error(err.message),
+    });
+
     $: availableStaff = $availableStaffRequest.data!;
 
     $: rows = $staffRequest.data ?? [];
@@ -45,6 +61,7 @@
                 flexRender(EditableSelectCell, {
                     value: ctx.getValue(),
                     options: roleOptions,
+                    onChange: makeOnChange(ctx.row.original),
                 }),
         },
         {
@@ -54,7 +71,22 @@
         },
     ];
 
+    let userId: number | undefined;
     let role = Role.USER;
+
+    const addUser = () => {
+        if (!userId) return;
+        console.log(userId, role, event);
+        $addRequest.mutate({ slug: event, userId, role });
+    };
+
+    const makeOnChange = (row: Staff) => (value: string) => {
+        $updateRequest.mutate({
+            slug: event,
+            userId: row.userId,
+            role: value as Role,
+        });
+    };
 </script>
 
 <h2 class="font-bold text-2xl">Personal</h2>
@@ -62,7 +94,7 @@
     <tr class="border-t">
         <td>
             <div class="w-full">
-                <select bind:value={role} class="bg-transparent w-full">
+                <select bind:value={userId} class="bg-transparent w-full">
                     {#if $availableStaffRequest.isSuccess && availableStaff}
                         {#each availableStaff as option}
                             <option value={option.id}>{option.name}</option>
@@ -84,6 +116,8 @@
                 </select>
             </div>
         </td>
-        <td>Submit</td>
+        <td>
+            <button on:click={addUser}> Hinzufügen </button>
+        </td>
     </tr>
 </Table>
