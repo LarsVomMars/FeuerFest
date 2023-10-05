@@ -1,5 +1,5 @@
 import db from "$lib/db";
-import { Role } from "$lib/db/types";
+import { Role, Status } from "$lib/db/types";
 import { admin } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
 import { z } from "zod";
@@ -22,6 +22,43 @@ export default router({
                 ])
                 .execute();
             return staff;
+        }),
+    listAvailable: admin
+        .input(z.object({ eventId: z.number() }))
+        .query(async ({ input }) => {
+            const available = await db
+                .selectFrom("User")
+                .where(({ not, exists, selectFrom, and, eb, or }) =>
+                    and([
+                        or([
+                            eb("status", "=", Status.ACTIVE),
+                            and([
+                                eb("status", "=", Status.PENDING),
+                                eb("dummy", "=", 1),
+                            ]),
+                        ]),
+                        not(
+                            exists(
+                                selectFrom("EventStaff")
+                                    .whereRef(
+                                        "EventStaff.userId",
+                                        "=",
+                                        "User.id",
+                                    )
+                                    .where(
+                                        "EventStaff.eventId",
+                                        "=",
+                                        input.eventId,
+                                    )
+                                    .select("EventStaff.id"),
+                            ),
+                        ),
+                    ]),
+                )
+                .select(["User.id", "User.name", "User.role"])
+                .orderBy("User.name")
+                .execute();
+            return available;
         }),
     add: admin
         .input(

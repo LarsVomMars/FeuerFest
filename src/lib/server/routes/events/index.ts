@@ -80,6 +80,11 @@ export default router({
                     createdById: ctx.session.user.id,
                 })
                 .execute();
+            await db.insertInto("EventStaff").values({
+                eventId: 1,
+                userId: ctx.session.user.id,
+                role: Role.OWNER,
+            });
             return slug;
         }),
     getBySlug: user
