@@ -3,39 +3,48 @@ import { admin, user } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import staff from "./staff";
+import { Role } from "$lib/db/types";
+import type { SessionUser } from "$lib/server/auth/session";
 
 const generateSlug = (name: string, start: Date) =>
     `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
+// TODO: Generate new slug function rec
+
+const createEventQuery = (user: SessionUser) => {
+    let query = db
+        .selectFrom("Event")
+        .leftJoin("EventStaff", "Event.slug", "EventStaff.slug")
+        .selectAll("Event")
+        .distinct();
+    if (user.role !== Role.OWNER) query = query.where("userId", "=", user.id);
+    return query;
+};
 
 export default router({
-    listActive: user.query(async () => {
+    staff,
+    listActive: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("start", "<=", now)
             .where("end", ">=", now)
             .orderBy("start", "asc")
-            .selectAll()
             .execute();
         return events;
     }),
-    listPast: user.query(async () => {
+    listPast: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("end", "<", now)
             .orderBy("start", "desc")
-            .selectAll()
             .execute();
         return events;
     }),
-    listUpcoming: user.query(async () => {
+    listUpcoming: user.query(async ({ ctx }) => {
         const now = new Date();
-        const events = await db
-            .selectFrom("Event")
+        const events = await createEventQuery(ctx.session.user)
             .where("start", ">", now)
             .orderBy("start", "asc")
-            .selectAll()
             .execute();
         return events;
     }),
@@ -55,7 +64,7 @@ export default router({
             const events = await db
                 .selectFrom("Event")
                 .where("slug", "=", slug)
-                .select("id")
+                .select("slug")
                 .execute();
 
             if (events.length > 0) slug += `-${events.length + 1}`;
@@ -72,16 +81,22 @@ export default router({
                     createdById: ctx.session.user.id,
                 })
                 .execute();
+            await db
+                .insertInto("EventStaff")
+                .values({
+                    slug,
+                    userId: ctx.session.user.id,
+                    role: Role.OWNER,
+                })
+                .execute();
             return slug;
         }),
     getBySlug: user
         .input(z.object({ slug: z.string() }))
-        .query(async ({ input }) => {
+        .query(async ({ ctx, input }) => {
             const { slug } = input;
-            const event = await db
-                .selectFrom("Event")
-                .where("slug", "=", slug)
-                .selectAll()
+            const event = await createEventQuery(ctx.session.user)
+                .where("Event.slug", "=", slug)
                 .executeTakeFirst();
             if (!event)
                 throw new TRPCError({
@@ -93,7 +108,7 @@ export default router({
     update: admin
         .input(
             z.object({
-                id: z.number(),
+                slug: z.string(),
                 name: z.string(),
                 description: z.string(),
                 location: z.string(),
@@ -102,12 +117,21 @@ export default router({
             }),
         )
         .mutation(async ({ input }) => {
-            const { id, ...data } = input;
-            const slug = generateSlug(data.name, data.start);
+            const { slug, ...data } = input;
+            let newSlug = generateSlug(data.name, data.start);
+            if (slug !== newSlug) {
+                const events = await db
+                    .selectFrom("Event")
+                    .where("slug", "=", newSlug)
+                    .select("slug")
+                    .execute();
+                if (events.length > 0) newSlug += `-${events.length + 1}`;
+            }
             await db
                 .updateTable("Event")
-                .set({ ...data, slug, updatedAt: new Date() })
-                .where("id", "=", id)
+                .set({ ...data, slug: newSlug, updatedAt: new Date() })
+                .where("slug", "=", slug)
                 .execute();
+            return newSlug;
         }),
 });

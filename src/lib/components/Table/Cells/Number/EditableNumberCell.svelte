@@ -44,7 +44,7 @@
                 bind:value
                 bind:this={input}
                 type="number"
-                class="w-full"
+                class="w-full bg-transparent"
                 min={0}
                 step={0.01}
                 on:blur={blur}

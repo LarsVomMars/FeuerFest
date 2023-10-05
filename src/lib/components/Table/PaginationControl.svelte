@@ -10,7 +10,7 @@
     $: currentPage = Math.max(1, Math.min(pages, currentPage));
 </script>
 
-<div>
+<div class="flex flex-row justify-center gap-x-2">
     <button on:click={() => (currentPage = 1)} disabled={currentPage === 1}>
         {"<<"}
     </button>
@@ -26,7 +26,8 @@
         min={1}
         max={pages}
     />
-    <span>/ {pages}</span>
+    <span>/</span>
+    <span>{pages}</span>
     <button
         on:click={() => (currentPage = Math.min(pages, currentPage + 1))}
         disabled={currentPage === pages}

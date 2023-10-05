@@ -5,7 +5,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 
 export interface Event {
-  id: Generated<number>;
+  slug: string;
   name: string;
   description: string;
   location: string;
@@ -14,7 +14,6 @@ export interface Event {
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   createdById: number;
-  slug: string;
 }
 
 export interface EventStaff {
@@ -22,8 +21,8 @@ export interface EventStaff {
   role: Generated<unknown>;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
-  eventId: number;
   userId: number;
+  slug: string;
 }
 
 export interface User {

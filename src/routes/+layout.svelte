@@ -17,7 +17,7 @@
 <QueryClientProvider client={queryClient}>
     <Header />
     <main
-        class="w-full h-[100vh] bg-ffdark text-white flex flex-col justify-center items-center"
+        class="w-full h-[100vh] bg-ffdark text-white flex flex-col justify-center items-center gap-y-4"
     >
         <slot />
     </main>

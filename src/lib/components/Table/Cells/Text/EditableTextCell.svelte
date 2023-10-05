@@ -39,7 +39,12 @@
 >
     {#if edit}
         <div class="w-full h-full">
-            <input bind:value bind:this={input} class="w-full" on:blur={blur} />
+            <input
+                bind:value
+                bind:this={input}
+                class="w-full bg-transparent"
+                on:blur={blur}
+            />
         </div>
     {:else}
         <TextCell {value} />
