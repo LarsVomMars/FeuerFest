@@ -10,12 +10,12 @@ export default router({
         .query(async ({ input }) => {
             const staff = await db
                 .selectFrom("Event")
-                .leftJoin("EventStaff", "Event.id", "EventStaff.eventId")
+                .leftJoin("EventStaff", "Event.slug", "EventStaff.slug")
                 .innerJoin("User", "EventStaff.userId", "User.id")
-                .where("slug", "=", input.event)
+                .where("Event.slug", "=", input.event)
                 .select([
                     "EventStaff.id as id",
-                    "Event.id as eventId",
+                    "Event.slug as slug",
                     "User.id as userId",
                     "User.name as name",
                     "EventStaff.role as role",
@@ -24,7 +24,7 @@ export default router({
             return staff;
         }),
     listAvailable: admin
-        .input(z.object({ eventId: z.number() }))
+        .input(z.object({ event: z.string() }))
         .query(async ({ input }) => {
             const available = await db
                 .selectFrom("User")
@@ -45,11 +45,7 @@ export default router({
                                         "=",
                                         "User.id",
                                     )
-                                    .where(
-                                        "EventStaff.eventId",
-                                        "=",
-                                        input.eventId,
-                                    )
+                                    .where("EventStaff.slug", "=", input.event)
                                     .select("EventStaff.id"),
                             ),
                         ),
@@ -63,7 +59,7 @@ export default router({
     add: admin
         .input(
             z.object({
-                eventId: z.number(),
+                slug: z.string(),
                 userId: z.number(),
                 role: z.nativeEnum(Role),
             }),

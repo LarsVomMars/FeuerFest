@@ -8,12 +8,12 @@
     import { trpc } from "$lib/trpc";
     import { flexRender, type ColumnDef } from "@tanstack/svelte-table";
 
-    const staffRequest = trpc.events.staff.list.query({
-        event: $page.params.slug!,
-    });
+    const event = $page.params.slug!;
+
+    const staffRequest = trpc.events.staff.list.query({ event });
 
     const availableStaffRequest = trpc.events.staff.listAvailable.query({
-        eventId: 1,
+        event,
     });
 
     $: availableStaff = $availableStaffRequest.data!;
