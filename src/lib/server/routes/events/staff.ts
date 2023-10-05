@@ -96,4 +96,13 @@ export default router({
                 .where("userId", "=", input.userId)
                 .execute();
         }),
+    remove: admin
+        .input(z.object({ slug: z.string(), userId: z.number() }))
+        .mutation(async ({ input }) => {
+            await db
+                .deleteFrom("EventStaff")
+                .where("slug", "=", input.slug)
+                .where("userId", "=", input.userId)
+                .execute();
+        }),
 });
