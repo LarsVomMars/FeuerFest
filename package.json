@@ -12,20 +12,20 @@
     },
     "dependencies": {
         "@sveltejs/kit": "^1.25.1",
-        "@tanstack/svelte-query": "^4.35.7",
-        "@tanstack/svelte-table": "^8.10.3",
-        "@trpc/client": "^10.38.5",
-        "@trpc/server": "^10.38.5",
+        "@tanstack/svelte-query": "^4.36.1",
+        "@tanstack/svelte-table": "^8.10.6",
+        "@trpc/client": "^10.40.0",
+        "@trpc/server": "^10.40.0",
         "bcrypt": "^5.1.1",
         "devalue": "^4.3.2",
         "dotenv": "^16.3.1",
         "kysely": "^0.26.3",
         "mysql2": "^3.6.1",
-        "nodemailer": "^6.9.5",
+        "nodemailer": "^6.9.6",
         "paseto": "^3.1.4",
         "svelte": "^4.2.1",
         "trpc-svelte-query": "1.0.3",
-        "zod": "^3.22.3"
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@sveltejs/adapter-auto": "^2.1.0",
@@ -35,7 +35,7 @@
         "@typescript-eslint/eslint-plugin": "^6.7.4",
         "@typescript-eslint/parser": "^6.7.4",
         "autoprefixer": "^10.4.16",
-        "eslint": "^8.50.0",
+        "eslint": "^8.51.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^5.0.0",
         "eslint-plugin-svelte": "^2.34.0",
@@ -45,11 +45,11 @@
         "prettier": "^3.0.3",
         "prettier-plugin-svelte": "^3.0.3",
         "prettier-plugin-tailwindcss": "^0.5.5",
-        "prisma": "^5.4.0",
+        "prisma": "^5.4.1",
         "svelte-check": "^3.5.2",
         "svelte-preprocess": "^5.0.4",
         "tailwindcss": "^3.3.3",
         "typescript": "~5.2.2",
-        "vite": "^4.4.10"
+        "vite": "^4.4.11"
     }
 }
