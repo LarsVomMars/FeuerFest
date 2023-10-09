@@ -62,11 +62,11 @@ model EventStaff {
 }
 
 model Product {
-    id          Int    @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     name        String
     description String
-    price       Int
-    event       Event  @relation(fields: [slug], references: [slug])
+    price       Decimal @db.Decimal(10, 2)
+    event       Event   @relation(fields: [slug], references: [slug])
 
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt

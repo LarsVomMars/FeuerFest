@@ -145,7 +145,7 @@
             </div>
         </td>
         <td>
-            <button on:click={addUser} disabled={submitDisabled}>
+            <button on:click={addUser} disabled={submitDisabled} class="w-full">
                 Hinzufügen
             </button>
         </td>

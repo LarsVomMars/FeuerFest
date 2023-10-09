@@ -1,6 +1,7 @@
 import db from "$lib/db";
 import { admin } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export default router({
@@ -10,6 +11,7 @@ export default router({
             const products = await db
                 .selectFrom("Product")
                 .where("slug", "=", input.event)
+                .orderBy("name")
                 .selectAll()
                 .execute();
             return products;
@@ -23,14 +25,27 @@ export default router({
                 price: z.number(),
             }),
         )
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
+            const { event, name, description, price } = input;
+            if (price < 0) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Price must be positive",
+                });
+            }
+            if (!name || !description) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Name and description must be provided",
+                });
+            }
             await db
                 .insertInto("Product")
                 .values({
-                    slug: input.event,
-                    name: input.name,
-                    description: input.description,
-                    price: input.price,
+                    slug: event,
+                    name,
+                    description,
+                    price,
                 })
                 .execute();
         }),
@@ -44,8 +59,22 @@ export default router({
                 price: z.number().optional(),
             }),
         )
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             const { event, id, ...data } = input;
+            if (data.price && data.price < 0) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Price must be positive",
+                });
+            }
+
+            if (data.name === "" || data.description === "") {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Name and description must be provided",
+                });
+            }
+
             await db
                 .updateTable("Product")
                 .set(data)
@@ -55,7 +84,7 @@ export default router({
         }),
     delete: admin
         .input(z.object({ event: z.string(), id: z.number() }))
-        .query(async ({ input }) => {
+        .mutation(async ({ input }) => {
             await db
                 .deleteFrom("Product")
                 .where("id", "=", input.id)
