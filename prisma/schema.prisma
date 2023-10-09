@@ -46,6 +46,7 @@ model Event {
     createdById Int
 
     EventStaff EventStaff[]
+    Product    Product[]
 }
 
 model EventStaff {
@@ -56,8 +57,21 @@ model EventStaff {
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt
 
+    slug   String
+    userId Int
+}
+
+model Product {
+    id          Int    @id @default(autoincrement())
+    name        String
+    description String
+    price       Int
+    event       Event  @relation(fields: [slug], references: [slug])
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime? @updatedAt
+
     slug String
-    userId    Int
 }
 
 enum Role {

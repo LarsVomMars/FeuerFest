@@ -3,9 +3,11 @@ import { admin, user } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import staff from "./staff";
 import { Role } from "$lib/db/types";
 import type { SessionUser } from "$lib/server/auth/session";
+
+import staff from "./staff";
+import products from "./products";
 
 const generateSlug = (name: string, start: Date) =>
     `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
@@ -23,6 +25,7 @@ const createEventQuery = (user: SessionUser) => {
 
 export default router({
     staff,
+    products,
     listActive: user.query(async ({ ctx }) => {
         const now = new Date();
         const events = await createEventQuery(ctx.session.user)

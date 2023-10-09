@@ -25,6 +25,16 @@ export interface EventStaff {
   slug: string;
 }
 
+export interface Product {
+  id: Generated<number>;
+  name: string;
+  description: string;
+  price: number;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date | null>;
+  slug: string;
+}
+
 export interface User {
   id: Generated<number>;
   email: string;
@@ -49,6 +59,7 @@ export interface UserSession {
 export interface DB {
   Event: Event;
   EventStaff: EventStaff;
+  Product: Product;
   User: User;
   UserSession: UserSession;
 }
