@@ -91,7 +91,7 @@ export default router({
         .mutation(async ({ input }) => {
             await db
                 .updateTable("EventStaff")
-                .set({ role: input.role })
+                .set({ role: input.role, updatedAt: new Date() })
                 .where("slug", "=", input.slug)
                 .where("userId", "=", input.userId)
                 .execute();

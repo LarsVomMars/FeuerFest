@@ -1,5 +1,7 @@
 import type { ColumnType } from "kysely";
 
+export type Decimal = ColumnType<string, string | number, string | number>;
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
@@ -23,6 +25,17 @@ export interface EventStaff {
   updatedAt: Generated<Date | null>;
   userId: number;
   slug: string;
+}
+
+export interface Product {
+  id: Generated<number>;
+  name: string;
+  description: string;
+  price: Decimal;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date | null>;
+  slug: string;
+  type: Generated<unknown>;
 }
 
 export interface User {
@@ -49,6 +62,7 @@ export interface UserSession {
 export interface DB {
   Event: Event;
   EventStaff: EventStaff;
+  Product: Product;
   User: User;
   UserSession: UserSession;
 }
