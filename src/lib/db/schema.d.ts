@@ -35,6 +35,7 @@ export interface Product {
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   slug: string;
+  type: Generated<unknown>;
 }
 
 export interface User {

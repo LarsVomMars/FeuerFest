@@ -62,11 +62,12 @@ model EventStaff {
 }
 
 model Product {
-    id          Int     @id @default(autoincrement())
+    id          Int         @id @default(autoincrement())
     name        String
     description String
-    price       Decimal @db.Decimal(10, 2)
-    event       Event   @relation(fields: [slug], references: [slug])
+    price       Decimal     @db.Decimal(10, 2)
+    event       Event       @relation(fields: [slug], references: [slug])
+    type        ProductTyoe @default(FOOD)
 
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt
@@ -84,4 +85,10 @@ enum Status {
     PENDING
     ACTIVE
     INACTIVE
+}
+
+enum ProductTyoe {
+    FOOD
+    DRINK
+    BAR
 }

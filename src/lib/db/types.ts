@@ -15,3 +15,9 @@ export enum Status {
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
 }
+
+export enum ProductType {
+    FOOD = "FOOD",
+    DRINK = "DRINK",
+    BAR = "BAR",
+}

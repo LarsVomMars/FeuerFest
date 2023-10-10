@@ -1,4 +1,5 @@
 import db from "$lib/db";
+import { ProductType } from "$lib/db/types";
 import { admin } from "$lib/server/middleware";
 import { router } from "$lib/server/trpc";
 import { TRPCError } from "@trpc/server";
@@ -12,6 +13,7 @@ export default router({
                 .selectFrom("Product")
                 .where("slug", "=", input.event)
                 .orderBy("name")
+                .orderBy("description")
                 .selectAll()
                 .execute();
             return products;
@@ -23,10 +25,11 @@ export default router({
                 name: z.string(),
                 description: z.string(),
                 price: z.number(),
+                type: z.nativeEnum(ProductType),
             }),
         )
         .mutation(async ({ input }) => {
-            const { event, name, description, price } = input;
+            const { event, name, description, price, type } = input;
             if (price < 0) {
                 throw new TRPCError({
                     code: "BAD_REQUEST",
@@ -46,6 +49,7 @@ export default router({
                     name,
                     description,
                     price,
+                    type,
                 })
                 .execute();
         }),
@@ -57,6 +61,7 @@ export default router({
                 name: z.string().optional(),
                 description: z.string().optional(),
                 price: z.number().optional(),
+                type: z.nativeEnum(ProductType).optional(),
             }),
         )
         .mutation(async ({ input }) => {

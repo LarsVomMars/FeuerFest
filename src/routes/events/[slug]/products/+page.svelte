@@ -2,8 +2,10 @@
     import { page } from "$app/stores";
     import DeleteAction from "$lib/components/Table/Cells/Action/DeleteAction.svelte";
     import EditableNumberCell from "$lib/components/Table/Cells/Number/EditableNumberCell.svelte";
+    import EditableSelectCell from "$lib/components/Table/Cells/Select/EditableSelectCell.svelte";
     import EditableTextCell from "$lib/components/Table/Cells/Text/EditableTextCell.svelte";
     import Table from "$lib/components/Table/Table.svelte";
+    import { ProductType } from "$lib/db/types";
     import { trpc } from "$lib/trpc";
     import { flexRender, type ColumnDef } from "@tanstack/svelte-table";
 
@@ -16,6 +18,7 @@
             name = "";
             description = "";
             price = undefined;
+            type = ProductType.FOOD;
         },
         onError: (err) => console.error(err.message),
     });
@@ -34,6 +37,12 @@
 
     $: rows = $productsRequest.data ?? [];
     type Product = (typeof rows)[0];
+
+    const typeOptions = [
+        { value: ProductType.FOOD, label: "Essen" },
+        { value: ProductType.DRINK, label: "Getränke" },
+        { value: ProductType.BAR, label: "Bar" },
+    ];
 
     const columns: ColumnDef<Product>[] = [
         {
@@ -54,6 +63,17 @@
                 flexRender(EditableTextCell, {
                     value: ctx.getValue(),
                     onChange: makeOnChange(ctx.row.original, "description"),
+                }),
+        },
+        {
+            id: "type",
+            accessorKey: "type",
+            header: "Typ",
+            cell: (ctx) =>
+                flexRender(EditableSelectCell, {
+                    value: ctx.getValue(),
+                    options: typeOptions,
+                    onChange: makeOnChange(ctx.row.original, "type"),
                 }),
         },
         {
@@ -80,7 +100,9 @@
     let name = "";
     let description = "";
     let price: number | undefined;
+    let type = ProductType.FOOD;
 
+    // TODO: Form submit
     const addProduct = () => {
         if (!name || !description || (price || 0) < 0) return;
         $createRequest.mutate({
@@ -88,13 +110,13 @@
             name,
             description,
             price: price ?? 0,
+            type,
         });
     };
 
     const makeOnChange =
-        (row: Product, name: "name" | "description" | "price") =>
+        (row: Product, name: "name" | "description" | "price" | "type") =>
         (value: string) => {
-            console.log(value);
             $updateRequest.mutate({
                 id: row.id,
                 event,
@@ -110,7 +132,7 @@
 <h2 class="font-bold text-2xl">Produkte</h2>
 <Table {columns} {rows} class="w-1/2">
     <tr class="border-t">
-        <td class="w-1/4">
+        <td class="w-1/5">
             <div class="w-full">
                 <input
                     bind:value={name}
@@ -118,7 +140,7 @@
                 />
             </div>
         </td>
-        <td class="w-1/4">
+        <td class="w-1/5">
             <div class="w-full">
                 <input
                     bind:value={description}
@@ -126,7 +148,18 @@
                 />
             </div>
         </td>
-        <td class="w-1/4">
+        <td class="w-1/5">
+            <div class="w-full">
+                <select bind:value={type} class="bg-transparent w-full">
+                    {#each typeOptions as option}
+                        <option value={option.value}>
+                            {option.label}
+                        </option>
+                    {/each}
+                </select>
+            </div>
+        </td>
+        <td class="w-1/5">
             <div class="w-full">
                 <input
                     bind:value={price}
@@ -137,7 +170,7 @@
                 />
             </div>
         </td>
-        <td class="w-1/4">
+        <td class="w-1/5">
             <button on:click={addProduct} class="w-full">Hinzufügen</button>
         </td>
     </tr>
