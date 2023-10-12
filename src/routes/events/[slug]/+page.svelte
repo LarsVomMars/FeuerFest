@@ -17,5 +17,6 @@
     </div>
 {/if}
 
+<a href="/events/{slug}/checkout">Kasse</a>
 <a href="/events/{slug}/staff">Personal</a>
 <a href="/events/{slug}/products">Produkte</a>

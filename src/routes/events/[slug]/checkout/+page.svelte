@@ -1,7 +1,10 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import { ProductType } from "$lib/db/types";
     import { trpc } from "$lib/trpc";
+    import Card from "./Card.svelte";
+    import ProductCard from "./ProductCard.svelte";
 
     const event = $page.params.slug!;
     const productsRequest = trpc.events.products.list.query({ event });
@@ -22,11 +25,44 @@
         $productsRequest.data?.filter((p) =>
             filter.includes(p.type as ProductType),
         ) ?? [];
+
+    type Product = (typeof products)[0];
+
+    let order: Product[] = [];
+    $: uniqueOrder = new Set(order);
+    $: amounts = new Map(
+        [...uniqueOrder].map((p) => [p, order.filter((o) => o === p).length]),
+    );
+    $: total = order.reduce((acc, p) => acc + Number(p.price), 0);
+
+    const addToOrder = (product: Product) => () =>
+        (order = [...order, product]);
+
+    const clearOrder = () => (order = []);
+    const removeFromOrder = (product: Product) => () => {
+        const index = order.indexOf(product);
+        if (index > -1) {
+            order.splice(index, 1);
+            order = [...order];
+        }
+    };
+
+    let custom: string;
+    $: customProduct = {
+        id: -1,
+        slug: event,
+        name: "Sonstiges",
+        description: "",
+        price: Number(custom).toFixed(2),
+        type: ProductType.FOOD,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    } satisfies Product;
 </script>
 
 <h2 class="font-bold text-2xl">Bestellen</h2>
 
-<div class="w-1/5">
+<div class="w-1/6 absolute right-4 top-20">
     <select bind:value={filter} class="bg-transparent w-full" multiple>
         {#each typeOptions as option}
             <option
@@ -39,14 +75,50 @@
     </select>
 </div>
 
-<div class="flex flex-row w-full flex-wrap justify-evenly gap-4">
-    {#each products as product}
-        <div
-            class="w-1/5 p-4 h-30 rounded-lg text-center border-2 border-ffred"
+<div class="w-full flex flex-row flex-wrap">
+    <div class="w-1/5 text-center select-none p-2 space-y-2">
+        <h2 class="font-bold text-xl">Bestellung</h2>
+        <table class="w-full h-auto">
+            {#each amounts as [item, amount]}
+                <tr>
+                    <td class="text-right w-[30%]">{amount}x</td>
+                    <td class="text-left w-[60%]">{item.name}</td>
+                    <td class="text-center w-[10%]">
+                        <button on:click={removeFromOrder(item)}>
+                            <img src="/icons/trash.svg" alt="trash" />
+                        </button>
+                    </td>
+                </tr>
+            {/each}
+        </table>
+        <div>Gesamt: {total.toFixed(2)}€</div>
+        <button class="w-2/3 bg-ffgreen rounded-md p-2">Bestellen</button>
+        <button class="w-2/3 bg-ffred rounded-md p-2" on:click={clearOrder}>
+            Abbrechen
+        </button>
+    </div>
+    <div class="flex flex-row flex-wrap justify-evenly gap-4 w-4/5">
+        {#each products as product}
+            <ProductCard
+                name={product.name}
+                description={product.description}
+                price={product.price}
+                action={addToOrder(product)}
+            />
+        {/each}
+        <Card
+            action={() => {
+                if (!+custom || +custom < 0) return;
+                addToOrder(customProduct)();
+            }}
+            self={true}
         >
-            <div>{product.name}</div>
-            <div>{product.description}</div>
-            <div>{product.price}</div>
-        </div>
-    {/each}
+            <h2 class="font-bold text-xl">Sonstiges</h2>
+            <input
+                type="number"
+                class="w-full rounded-lg border-2 border-ffdark bg-transparent p-2 focus:outline-none"
+                bind:value={custom}
+            />
+        </Card>
+    </div>
 </div>
