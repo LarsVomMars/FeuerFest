@@ -27,6 +27,23 @@ export interface EventStaff {
   slug: string;
 }
 
+export interface Order {
+  id: Generated<number>;
+  createdAt: Generated<Date>;
+  slug: string;
+  userId: number;
+}
+
+export interface OrderItem {
+  id: Generated<number>;
+  quantity: number;
+  total: Decimal;
+  voucher: Generated<number>;
+  createdAt: Generated<Date>;
+  orderId: number;
+  productId: Generated<number | null>;
+}
+
 export interface Product {
   id: Generated<number>;
   name: string;
@@ -62,6 +79,8 @@ export interface UserSession {
 export interface DB {
   Event: Event;
   EventStaff: EventStaff;
+  Order: Order;
+  OrderItem: OrderItem;
   Product: Product;
   User: User;
   UserSession: UserSession;

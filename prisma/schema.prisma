@@ -19,6 +19,7 @@ model User {
     UserSession UserSession[]
     Event       Event[]
     EventStaff  EventStaff[]
+    Order       Order[]
 }
 
 // token insted of id?
@@ -47,6 +48,7 @@ model Event {
 
     EventStaff EventStaff[]
     Product    Product[]
+    Order      Order[]
 }
 
 model EventStaff {
@@ -72,7 +74,32 @@ model Product {
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt
 
-    slug String
+    slug      String
+    OrderItem OrderItem[]
+}
+
+model Order {
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [userId], references: [id])
+    event     Event    @relation(fields: [slug], references: [slug])
+    createdAt DateTime @default(now())
+
+    slug      String
+    userId    Int
+    OrderItem OrderItem[]
+}
+
+model OrderItem {
+    id        Int      @id @default(autoincrement())
+    order     Order    @relation(fields: [orderId], references: [id])
+    product   Product? @relation(fields: [productId], references: [id])
+    quantity  Int
+    total     Decimal  @db.Decimal(10, 2)
+    voucher   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    orderId   Int
+    productId Int?
 }
 
 enum Role {
