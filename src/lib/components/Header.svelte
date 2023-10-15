@@ -54,10 +54,10 @@
     <div class="w-32 h-16">
         <span
             class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[13rem]"
-        ></span>
+        />
         <span
             class="w-4 h-24 bg-white absolute -rotate-[30deg] -translate-y-4 left-[15rem]"
-        ></span>
+        />
     </div>
 
     {#if showProfile}

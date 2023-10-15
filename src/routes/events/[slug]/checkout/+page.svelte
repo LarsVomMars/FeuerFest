@@ -1,6 +1,8 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import Dialog from "$lib/components/Dialog.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
+    import Submit from "$lib/components/Form/Submit.svelte";
     import { ProductType } from "$lib/db/types";
     import { trpc } from "$lib/trpc";
     import Card from "./Card.svelte";
@@ -8,6 +10,13 @@
 
     const event = $page.params.slug!;
     const productsRequest = trpc.events.products.list.query({ event });
+    const orderRequest = trpc.events.checkout.order.mutation({
+        onSuccess: () => {
+            $productsRequest.refetch();
+            order = [];
+            voucher = false;
+        },
+    });
 
     let filter: ProductType[] = [
         ProductType.FOOD,
@@ -43,21 +52,29 @@
         const index = order.indexOf(product);
         if (index > -1) {
             order.splice(index, 1);
-            order = [...order];
+            order = order;
         }
+    };
+
+    let voucher = false;
+    const makeOrder = () => {
+        const order = [...amounts].map(([item, quantity]) => ({
+            id: item.id,
+            quantity,
+            total: Number(item.price) * quantity,
+        }));
+        dialog.close();
+        $orderRequest.mutate({ event, order, voucher });
     };
 
     let custom: string;
     $: customProduct = {
         id: -1,
-        slug: event,
         name: "Sonstiges",
-        description: "",
         price: Number(custom).toFixed(2),
-        type: ProductType.FOOD,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    } satisfies Product;
+    } as Product;
+
+    let dialog: HTMLDialogElement;
 </script>
 
 <h2 class="font-bold text-2xl">Bestellen</h2>
@@ -85,14 +102,23 @@
                     <td class="text-left w-[60%]">{item.name}</td>
                     <td class="text-center w-[10%]">
                         <button on:click={removeFromOrder(item)}>
-                            <img src="/icons/trash.svg" alt="trash" />
+                            <img
+                                src="/icons/trash.svg"
+                                alt="trash"
+                                class="w-4"
+                            />
                         </button>
                     </td>
                 </tr>
             {/each}
         </table>
         <div>Gesamt: {total.toFixed(2)}€</div>
-        <button class="w-2/3 bg-ffgreen rounded-md p-2">Bestellen</button>
+        <button
+            class="w-2/3 bg-ffgreen rounded-md p-2"
+            on:click={() => order.length && dialog.showModal()}
+        >
+            Bestellen
+        </button>
         <button class="w-2/3 bg-ffred rounded-md p-2" on:click={clearOrder}>
             Abbrechen
         </button>
@@ -110,6 +136,7 @@
             action={() => {
                 if (!+custom || +custom < 0) return;
                 addToOrder(customProduct)();
+                custom = "";
             }}
             self={true}
         >
@@ -122,3 +149,16 @@
         </Card>
     </div>
 </div>
+
+<Dialog
+    bind:dialog
+    class="bg-ffdark w-1/2 h-1/2 text-white flex flex-col justify-center items-center"
+>
+    <span class="font-bold">Gesamt: {total}€</span>
+    <button
+        class="w-1/2 rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed"
+        on:click={makeOrder}
+    >
+        Bestellen
+    </button>
+</Dialog>

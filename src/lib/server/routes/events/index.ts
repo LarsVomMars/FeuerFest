@@ -8,6 +8,7 @@ import type { SessionUser } from "$lib/server/auth/session";
 
 import staff from "./staff";
 import products from "./products";
+import checkout from "./checkout";
 
 const generateSlug = (name: string, start: Date) =>
     `${start.getFullYear()}-${name.toLocaleLowerCase().replace(/\s/g, "-")}`;
@@ -24,8 +25,9 @@ const createEventQuery = (user: SessionUser) => {
 };
 
 export default router({
-    staff,
+    checkout,
     products,
+    staff,
     listActive: user.query(async ({ ctx }) => {
         const now = new Date();
         const events = await createEventQuery(ctx.session.user)
