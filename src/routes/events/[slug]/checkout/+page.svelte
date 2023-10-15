@@ -2,7 +2,7 @@
     import { page } from "$app/stores";
     import Dialog from "$lib/components/Dialog.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
-    import Submit from "$lib/components/Form/Submit.svelte";
+    import LabeledToggle from "$lib/components/Form/Input/LabeledToggle.svelte";
     import { ProductType } from "$lib/db/types";
     import { trpc } from "$lib/trpc";
     import Card from "./Card.svelte";
@@ -14,6 +14,7 @@
         onSuccess: () => {
             $productsRequest.refetch();
             order = [];
+            received = "";
             voucher = false;
         },
     });
@@ -75,6 +76,8 @@
     } as Product;
 
     let dialog: HTMLDialogElement;
+    let received: string;
+    $: change = ((Number(received) || 0) - total).toFixed();
 </script>
 
 <h2 class="font-bold text-2xl">Bestellen</h2>
@@ -152,13 +155,32 @@
 
 <Dialog
     bind:dialog
-    class="bg-ffdark w-1/2 h-1/2 text-white flex flex-col justify-center items-center"
+    class="bg-ffdark w-1/2 h-1/2 text-white flex flex-col justify-center items-center [&:not([open])]:hidden gap-4"
 >
     <span class="font-bold">Gesamt: {total}€</span>
+    <div class="w-1/2">
+        <LabeledInput label="Bekommen" bind:value={received} type="number" />
+    </div>
+    <span class="font-bold">Rückgeld: {change}€</span>
+
+    <div class="w-1/2">
+        <LabeledToggle label="Gutschein" bind:checked={voucher} />
+    </div>
+
     <button
         class="w-1/2 rounded-lg bg-ffblue p-2 hover:bg-ffblue-dimmed"
         on:click={makeOrder}
     >
         Bestellen
+    </button>
+    <button
+        class="w-1/2 rounded-lg bg-ffred p-2 hover:bg-ffred-dimmed"
+        on:click={() => {
+            dialog.close();
+            received = "";
+            voucher = false;
+        }}
+    >
+        Abbrechen
     </button>
 </Dialog>

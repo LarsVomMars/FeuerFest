@@ -30,7 +30,7 @@
     let id = label.toLowerCase().replace(" ", "-");
 </script>
 
-<div>
+<div class="w-full">
     <label
         for={id}
         class="absolute -translate-y-4 translate-x-5 select-none bg-ffdark px-1 text-gray-300"
