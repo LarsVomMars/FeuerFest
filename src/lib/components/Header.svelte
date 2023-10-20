@@ -29,6 +29,22 @@
         $logoutRequest.mutate();
     };
 
+    const toggleDarkMode = () => {
+        if (document.documentElement.classList.contains("dark")) {
+            localStorage.theme = "light";
+            document.documentElement.classList.remove("dark")
+
+        }else {
+            localStorage.theme = "dark";
+            document.documentElement.classList.add("dark")
+
+        }
+
+
+
+
+    };
+
     onMount(() => {
         if (browser) {
             document.addEventListener("click", (e) => {
@@ -81,7 +97,9 @@
                 on:click={profile}>Profil</a
             >
             <div class="p-2">Sprache</div>
-            <div class="p-2">Dunkler Modus</div>
+            <button on:click={toggleDarkMode} class="p-2 hover:text-gray-200">
+                Dunkler Modus
+            </button>
             <button on:click={logout} class="p-2 hover:text-gray-200">
                 Abmelden
             </button>

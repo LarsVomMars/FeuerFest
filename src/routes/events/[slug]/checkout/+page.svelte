@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { page } from "$app/stores";
+    import {page} from "$app/stores";
     import Dialog from "$lib/components/Dialog.svelte";
     import LabeledInput from "$lib/components/Form/Input/LabeledInput.svelte";
     import LabeledToggle from "$lib/components/Form/Input/LabeledToggle.svelte";
-    import { ProductType } from "$lib/db/types";
-    import { trpc } from "$lib/trpc";
+    import {ProductType} from "$lib/db/types";
+    import {trpc} from "$lib/trpc";
     import Card from "./Card.svelte";
     import ProductCard from "./ProductCard.svelte";
 
     const event = $page.params.slug!;
-    const productsRequest = trpc.events.products.list.query({ event });
+    const productsRequest = trpc.events.products.list.query({event});
     const orderRequest = trpc.events.checkout.order.mutation({
         onSuccess: () => {
             $productsRequest.refetch();
@@ -26,9 +26,9 @@
     ];
 
     const typeOptions = [
-        { value: ProductType.FOOD, label: "Essen" },
-        { value: ProductType.DRINK, label: "Getränke" },
-        { value: ProductType.BAR, label: "Bar" },
+        {value: ProductType.FOOD, label: "Essen"},
+        {value: ProductType.DRINK, label: "Getränke"},
+        {value: ProductType.BAR, label: "Bar"},
     ];
 
     $: products =
@@ -65,7 +65,7 @@
             total: Number(item.price) * quantity,
         }));
         dialog.close();
-        $orderRequest.mutate({ event, order, voucher });
+        $orderRequest.mutate({event, order, voucher});
     };
 
     let custom: string;
@@ -159,12 +159,12 @@
 >
     <span class="font-bold">Gesamt: {total}€</span>
     <div class="w-1/2">
-        <LabeledInput label="Bekommen" bind:value={received} type="number" />
+        <LabeledInput label="Bekommen" bind:value={received} type="number"/>
     </div>
     <span class="font-bold">Rückgeld: {change}€</span>
 
     <div class="w-1/2">
-        <LabeledToggle label="Gutschein" bind:checked={voucher} />
+        <LabeledToggle label="Gutschein" bind:checked={voucher}/>
     </div>
 
     <button

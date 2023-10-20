@@ -21,6 +21,10 @@ module.exports = {
                 ffdark: {
                     DEFAULT: "#363636",
                 },
+
+                fflight: {
+                    DEFAULT: "#fff",
+                },
             },
         },
     },
