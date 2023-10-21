@@ -7,7 +7,6 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 
 export interface Event {
-  slug: string;
   name: string;
   description: string;
   location: string;
@@ -16,11 +15,12 @@ export interface Event {
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   createdById: number;
+  slug: string;
 }
 
 export interface EventStaff {
   id: Generated<number>;
-  role: Generated<unknown>;
+  role: Generated<"ADMIN" | "OWNER" | "USER">;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   userId: number;
@@ -49,10 +49,10 @@ export interface Product {
   name: string;
   description: string;
   price: Decimal;
+  type: Generated<"BAR" | "DRINK" | "FOOD">;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
   slug: string;
-  type: Generated<unknown>;
 }
 
 export interface User {
@@ -60,11 +60,11 @@ export interface User {
   email: string;
   name: string;
   username: string;
-  password: Generated<string>;
-  role: Generated<unknown>;
-  status: Generated<unknown>;
   createdAt: Generated<Date>;
   updatedAt: Generated<Date | null>;
+  role: Generated<"ADMIN" | "OWNER" | "USER">;
+  status: Generated<"ACTIVE" | "INACTIVE" | "PENDING">;
+  password: Generated<string>;
   dummy: Generated<number>;
 }
 

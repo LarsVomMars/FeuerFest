@@ -18,7 +18,7 @@
 </script>
 
 <div
-    class="w-1/5 p-4 h-30 rounded-lg text-center border-2 border-ffred-dimmed bg-ffred cursor-pointer hover:bg-ffred-dimmed select-none"
+    class="w-1/5 p-4 h-32 rounded-lg text-center border-2 border-ffred-dimmed bg-ffred cursor-pointer hover:bg-ffred-dimmed select-none flex flex-col justify-center"
     on:click={actionHandler}
     on:keypress={keypress}
     role="button"
