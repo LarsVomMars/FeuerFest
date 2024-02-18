@@ -36,7 +36,7 @@ export default router({
                     message: "Price must be positive",
                 });
             }
-            if (!name || !description) {
+            if (!name) {
                 throw new TRPCError({
                     code: "BAD_REQUEST",
                     message: "Name and description must be provided",

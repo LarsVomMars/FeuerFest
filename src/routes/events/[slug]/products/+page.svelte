@@ -104,7 +104,7 @@
 
     // TODO: Form submit
     const addProduct = () => {
-        if (!name || !description || (price || 0) < 0) return;
+        if (!name || (price || 0) < 0) return;
         $createRequest.mutate({
             event,
             name,

@@ -6,6 +6,7 @@
     import { ProductType } from "$lib/db/types";
     import { trpc } from "$lib/trpc";
     import Card from "./Card.svelte";
+    import Multiselect from "./Multiselect.svelte";
     import ProductCard from "./ProductCard.svelte";
 
     const event = $page.params.slug!;
@@ -83,16 +84,7 @@
 <h2 class="font-bold text-2xl">Bestellen</h2>
 
 <div class="w-1/6 absolute right-4 top-20">
-    <select bind:value={filter} class="bg-transparent w-full" multiple>
-        {#each typeOptions as option}
-            <option
-                value={option.value}
-                class="checked:bg-ffgreen-dark checked:text-white [&:not(:checked)]:bg-ffred-dimmed text-center"
-            >
-                {option.label}
-            </option>
-        {/each}
-    </select>
+    <Multiselect bind:value={filter} options={typeOptions} />
 </div>
 
 <div class="w-full flex flex-row flex-wrap">
@@ -143,7 +135,7 @@
             }}
             self={true}
         >
-            <h2 class="font-bold text-xl">Sonstiges</h2>
+            <h2 class="font-bold text-xl mb-2">Sonstiges</h2>
             <input
                 type="number"
                 class="w-full rounded-lg border-2 border-ffdark bg-transparent p-2 focus:outline-none"

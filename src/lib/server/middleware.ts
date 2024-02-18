@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { middleware, procedure } from "./trpc";
-import { RoleValue } from "$lib/db/types";
+import { Role, RoleValue } from "$lib/db/types";
+import db from "$lib/db";
 
 const loggedIn = middleware(async ({ ctx, next }) => {
     const { session } = ctx;
@@ -50,3 +51,24 @@ const isOwner = middleware(async ({ ctx, next }) => {
 });
 
 export const owner = procedure.use(isOwner);
+
+export const isEventUser = async (event: string, user: number) => {
+    const eventUser = await db
+        .selectFrom("EventStaff")
+        .where("slug", "=", event)
+        .where("userId", "=", user)
+        .selectAll()
+        .executeTakeFirst();
+    return !!eventUser;
+};
+
+export const isEventAdmin = async (event: string, user: number) => {
+    const eventUser = await db
+        .selectFrom("EventStaff")
+        .where("slug", "=", event)
+        .where("userId", "=", user)
+        .selectAll()
+        .executeTakeFirst();
+    if (!eventUser) return false;
+    return RoleValue[eventUser.role] >= RoleValue.ADMIN;
+};
