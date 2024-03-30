@@ -10,13 +10,10 @@ export const appRouter = router({
         .input(z.object({ username: z.string(), password: z.string() }))
         .mutation(async ({ ctx, input }) => {
             try {
-                console.log("login", input);
                 const result = await db
                     .select()
                     .from(user)
                     .where(eq(user.username, input.username));
-
-                console.log("result", result);
 
                 if (!result) {
                     return;
