@@ -1,15 +1,17 @@
 <script lang="ts">
+    import type { Column } from ".";
+
     import PaginationControl from "./PaginationControl.svelte";
 
-    interface Props<T> {
+    interface Props<T extends Record<string, any>> {
         rows: T[];
-        columns: { key: keyof T; label: string }[];
+        columns: Column<T>[];
     }
 
     let page = $state(0);
     let size = $state(20);
 
-    export type T = $$Generic;
+    export type T = $$Generic<Record<string, any>>;
 
     let { rows, columns }: Props<T> = $props();
 
@@ -27,11 +29,18 @@
     <tbody>
         {#each currentRows as row}
             <tr>
-                {#each columns as { key }}
-                    <td>{row[key]}</td>
+                {#each columns as { key, cell }}
+                    {@const props = cell.props ? cell.props(row) : []}
+                    <td>
+                        <svelte:component
+                            this={cell.component}
+                            value={row[key]}
+                            {...props}
+                        />
+                    </td>
                 {/each}
             </tr>
         {/each}
     </tbody>
 </table>
-<PaginationControl bind:page={page} bind:size={size} total={rows.length} />
+<PaginationControl bind:page bind:size total={rows.length} />
