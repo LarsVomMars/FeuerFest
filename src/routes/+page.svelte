@@ -1,8 +1,8 @@
 <script lang="ts">
     import { columnBuilder, type Column } from "$lib/components/table";
     import Table from "$lib/components/table/Table.svelte";
-    import TextCell from "$lib/components/table/cells/text/TextCell.svelte";
     import EditTextCell from "$lib/components/table/cells/text/EditTextCell.svelte";
+    import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 
     type Row = {
         id: number;
@@ -42,6 +42,8 @@
 
 <main>
     <h1>FeuerFest</h1>
+
+    <ThemeToggle />
 
     <Table {rows} {columns} />
 </main>

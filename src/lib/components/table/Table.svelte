@@ -30,12 +30,11 @@
         {#each currentRows as row}
             <tr>
                 {#each columns as { key, cell }}
-                    {@const props = cell.props ? cell.props(row) : []}
                     <td>
                         <svelte:component
                             this={cell.component}
                             value={row[key]}
-                            {...props}
+                            {...cell.props?.(row) ?? []}
                         />
                     </td>
                 {/each}
