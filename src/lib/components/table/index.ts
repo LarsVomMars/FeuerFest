@@ -16,3 +16,6 @@ export const columnBuilder = <T, C extends SvelteComponent = SvelteComponent>(
     label: string,
     cell: Cell<T, C>,
 ): Column<T, C> => ({ key, label, cell });
+
+export { default } from "./Table.svelte";
+export * from "./cells";
