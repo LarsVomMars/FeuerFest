@@ -1,4 +1,5 @@
 <script lang="ts">
+    import MutliDropdown from "$lib/components/MutliDropdown.svelte";
     import { columnBuilder, type Column } from "$lib/components/table";
     import Table, { EditTextCell } from "$lib/components/table";
     import ThemeToggle from "$lib/components/ThemeToggle.svelte";
@@ -37,12 +38,27 @@
             clearInterval(interval);
         };
     });
+
+    let options = [
+        { value: 1, name: "One" },
+        { value: 2, name: "Two" },
+        { value: 3, name: "Three" },
+    ];
+
+    let selected = $state([]);
 </script>
 
 <main>
     <h1>FeuerFest</h1>
 
-    <ThemeToggle />
+    <!-- <ThemeToggle /> -->
 
-    <Table {rows} {columns} />
+    <pre>
+        {JSON.stringify(selected, null, 2)}
+    </pre>
+    <div class="w-1/2 m-auto">
+        <MutliDropdown {options} bind:selected />
+    </div>
+
+    <!-- <Table {rows} {columns} /> -->
 </main>
