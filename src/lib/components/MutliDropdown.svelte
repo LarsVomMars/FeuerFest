@@ -14,16 +14,20 @@
     let { options, selected }: Props<T> = $props();
 
     let open = $state(false);
-    let availableOptions = $derived(
-        options.filter((o) => !selected.includes(o)),
-    );
+    // TODO: Debug, this doesnt work when bound
+    // let availableOptions = $derived(
+    //     options.filter((o) => !selected.includes(o)),
+    // );
+    let availableOptions = $state(options);
 
     const selectOption = (option: Option<T>) => {
         selected = [...selected, option];
+        availableOptions = availableOptions.filter((o) => o !== option);
     };
 
     const removeOption = (option: Option<T>) => {
         selected = selected.filter((s) => s !== option);
+        availableOptions = [...availableOptions, option];
     };
 </script>
 

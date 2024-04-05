@@ -52,10 +52,6 @@
     <h1>FeuerFest</h1>
 
     <!-- <ThemeToggle /> -->
-
-    <pre>
-        {JSON.stringify(selected, null, 2)}
-    </pre>
     <div class="w-1/2 m-auto">
         <MutliDropdown {options} bind:selected />
     </div>
