@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Form, { NumberInput, SubmitButton, TextInput, EmailInput, PasswordInput } from "$lib/components/form";
+    import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
     import MutliDropdown from "$lib/components/MutliDropdown.svelte";
     import { columnBuilder, type Column } from "$lib/components/table";
     import Table, { EditTextCell } from "$lib/components/table";
@@ -46,15 +48,35 @@
     ];
 
     let selected = $state([]);
+
+    const submit = (e: Event) => {
+        console.log(name, age);
+    };
+    let name = $state("");
+    let age = $state<number>();
+    let email = $state("");
+    let password = $state("");
+    let disabled = $state(false);
 </script>
 
 <main>
     <h1>FeuerFest</h1>
 
     <!-- <ThemeToggle /> -->
-    <div class="w-1/2 m-auto">
+    <!-- <div class="w-1/2 m-auto">
         <MutliDropdown {options} bind:selected />
-    </div>
+    </div> -->
 
     <!-- <Table {rows} {columns} /> -->
+
+    <div class="w-1/2 m-auto">
+        <Form {submit}>
+            <TextInput label="Name" bind:value={name} />
+            <NumberInput label="Age" bind:value={age} />
+            <EmailInput label="Email" bind:value={email} />
+            <PasswordInput label="Password" bind:value={password} />
+            <ToggleButton label="Disabled" bind:checked={disabled} />
+            <SubmitButton text="Submit" />
+        </Form>
+    </div>
 </main>

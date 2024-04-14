@@ -5,8 +5,6 @@ import {
     boolean,
     timestamp,
     integer,
-    bigint,
-    bigserial,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("User", {

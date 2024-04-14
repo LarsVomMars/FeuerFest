@@ -22,7 +22,7 @@
         {/if}
     </label>
     <input
-        type="text"
+        type="email"
         {id}
         class="w-full rounded-lg border-2 border-black bg-transparent p-2 focus:outline-none"
         bind:value

@@ -6,7 +6,7 @@
         label,
         required = false,
         disabled = false,
-    }: DefaultProps = $props();
+    }: DefaultProps<number> = $props();
 
     let id = label.replace(/\s/g, "_").toLowerCase();
 </script>
@@ -22,7 +22,7 @@
         {/if}
     </label>
     <input
-        type="text"
+        type="number"
         {id}
         class="w-full rounded-lg border-2 border-black bg-transparent p-2 focus:outline-none"
         bind:value
