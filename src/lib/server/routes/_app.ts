@@ -4,8 +4,10 @@ import db from "../db";
 import { user } from "../db/schema";
 import lucia, { setSessionCookie } from "../auth";
 import { eq } from "drizzle-orm";
+import setup from "./setup";
 
 export const appRouter = router({
+    setup,
     login: procedure
         .input(z.object({ username: z.string(), password: z.string() }))
         .mutation(async ({ ctx, input }) => {
