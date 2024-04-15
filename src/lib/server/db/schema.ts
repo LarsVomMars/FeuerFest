@@ -5,15 +5,27 @@ import {
     boolean,
     timestamp,
     integer,
+    pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const userRoleEnum = pgEnum("userRole", ["USER", "ADMIN", "OWNER"]);
+export const userStatusEnum = pgEnum("userStatus", [
+    "PENDING",
+    "ACTIVE",
+    "INACTIVE",
+]);
 
 export const user = pgTable("User", {
     id: serial("id").primaryKey().notNull(),
     email: text("email").notNull().unique(),
     name: text("name").notNull().unique(),
-    username: text("username").notNull().unique(),
+    username: text("username").unique(),
     password: text("password").default("").notNull(),
+
     dummy: boolean("dummy").default(true).notNull(),
+    role: userRoleEnum("role").default("USER").notNull(),
+    status: userStatusEnum("status").default("PENDING").notNull(),
+
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
         .defaultNow()
         .notNull(),
