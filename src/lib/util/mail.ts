@@ -16,3 +16,17 @@ export const sendMail = (
     text: string,
     from = env.EMAIL_FROM,
 ) => mailer.sendMail({ from, to, subject, text });
+
+export const sendHtmlMail = (
+    to: string,
+    subject: string,
+    html: string,
+    from = env.EMAIL_FROM,
+) => mailer.sendMail({ from, to, subject, html });
+
+export const sendActivationMail = (to: string, activationLink: string) =>
+    sendHtmlMail(
+        to,
+        "Activate your account",
+        `Click <a href="${activationLink}">here</a> to activate your account.`,
+    );

@@ -4,6 +4,8 @@ import { user } from "../db/schema";
 import { procedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { createActivationToken } from "$lib/util/token";
+import { sendActivationMail } from "$lib/util/mail";
 
 const isSetup = async () => (await db.select().from(user).limit(1)).length > 0;
 const validateSetup = async () => {
@@ -33,15 +35,22 @@ export default router({
                 const result = await db
                     .insert(user)
                     .values({ ...input, role: "OWNER" })
-                    .returning({ insertedId: user.id });
+                    .returning({ id: user.id, email: user.email });
 
                 if (result.length !== 1)
                     throw new TRPCError({
                         code: "BAD_REQUEST",
                         message: "Could not create user",
                     });
-                const userId = result[0]!.insertedId;
-                // TODO: Send activation email
+
+                const ret = result[0]!;
+                const token = await createActivationToken(ret.id, ret.email);
+                const url = new URL(
+                    `/auth/activate/${token}`,
+                    ctx.event.url.origin,
+                );
+
+                await sendActivationMail(ret.email, url.toString());
             } catch (e) {
                 console.error(e);
                 throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
