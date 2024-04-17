@@ -1,21 +1,23 @@
 import { procedure, router } from "../trpc";
 import z from "zod";
 import db from "../db";
-import { user } from "../db/schema";
+import { userTable } from "../db/schema";
 import lucia, { setSessionCookie } from "../auth";
 import { eq } from "drizzle-orm";
 import setup from "./setup";
+import auth from "./auth";
 
 export const appRouter = router({
     setup,
+    auth,
     login: procedure
         .input(z.object({ username: z.string(), password: z.string() }))
         .mutation(async ({ ctx, input }) => {
             try {
                 const result = await db
                     .select()
-                    .from(user)
-                    .where(eq(user.username, input.username));
+                    .from(userTable)
+                    .where(eq(userTable.username, input.username));
 
                 if (!result) {
                     return;
@@ -46,9 +48,9 @@ export const appRouter = router({
         .mutation(async ({ ctx, input }) => {
             try {
                 const result = await db
-                    .insert(user)
+                    .insert(userTable)
                     .values({ ...input })
-                    .returning({ id: user.id });
+                    .returning({ id: userTable.id });
                 const userId = result[0]!.id;
 
                 const session = await lucia.createSession(userId, {});

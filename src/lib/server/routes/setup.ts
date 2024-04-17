@@ -1,13 +1,13 @@
 import { count } from "drizzle-orm";
 import db from "../db";
-import { user } from "../db/schema";
+import { userTable } from "../db/schema";
 import { procedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createActivationToken } from "$lib/util/token";
 import { sendActivationMail } from "$lib/util/mail";
 
-const isSetup = async () => (await db.select().from(user).limit(1)).length > 0;
+const isSetup = async () => (await db.select().from(userTable).limit(1)).length > 0;
 const validateSetup = async () => {
     if (await isSetup())
         throw new TRPCError({
@@ -33,9 +33,9 @@ export default router({
 
             try {
                 const result = await db
-                    .insert(user)
+                    .insert(userTable)
                     .values({ ...input, role: "OWNER" })
-                    .returning({ id: user.id, email: user.email });
+                    .returning({ id: userTable.id, email: userTable.email });
 
                 if (result.length !== 1)
                     throw new TRPCError({

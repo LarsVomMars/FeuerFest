@@ -15,7 +15,7 @@ export const userStatusEnum = pgEnum("userStatus", [
     "INACTIVE",
 ]);
 
-export const user = pgTable("User", {
+export const userTable = pgTable("User", {
     id: serial("id").primaryKey().notNull(),
     email: text("email").notNull().unique(),
     name: text("name").notNull().unique(),
@@ -32,11 +32,11 @@ export const user = pgTable("User", {
     updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }),
 });
 
-export const session = pgTable("Session", {
+export const sessionTable = pgTable("Session", {
     id: text("id").primaryKey(),
     userId: integer("user_id")
         .notNull()
-        .references(() => user.id),
+        .references(() => userTable.id),
     expiresAt: timestamp("expires_at", {
         withTimezone: true,
         mode: "date",
