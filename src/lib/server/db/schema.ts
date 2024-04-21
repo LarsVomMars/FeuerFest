@@ -22,14 +22,12 @@ export const userTable = pgTable("User", {
     username: text("username").unique(),
     password: text("password").default("").notNull(),
 
-    dummy: boolean("dummy").default(true).notNull(),
+    dummy: boolean("dummy").default(false).notNull(),
     role: userRoleEnum("role").default("USER").notNull(),
     status: userStatusEnum("status").default("PENDING").notNull(),
 
-    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
-        .defaultNow()
-        .notNull(),
-    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt"),
 });
 
 export const sessionTable = pgTable("Session", {

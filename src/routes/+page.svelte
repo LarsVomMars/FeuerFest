@@ -62,6 +62,8 @@
 <main>
     <h1>FeuerFest</h1>
 
+    <button>Logout</button>
+
     <!-- <ThemeToggle /> -->
     <!-- <div class="w-1/2 m-auto">
         <MutliDropdown {options} bind:selected />
