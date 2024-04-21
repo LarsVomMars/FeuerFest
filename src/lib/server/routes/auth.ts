@@ -5,7 +5,8 @@ import { z } from "zod";
 import db from "../db";
 import { userTable } from "../db/schema";
 import { and, eq } from "drizzle-orm";
-import { hash } from "$lib/util/password";
+import { hash, verify } from "$lib/util/password";
+import lucia, { setSessionCookie } from "../auth";
 
 const getActivationTokenUser = async (token: string) => {
     const { userId, email, type } = await parseToken(token);
@@ -87,4 +88,53 @@ export default router({
                 })
                 .where(eq(userTable.id, user.id));
         }),
+    login: procedure
+        .input(z.object({ username: z.string(), password: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            try {
+                const result = await db
+                    .select()
+                    .from(userTable)
+                    .where(
+                        and(
+                            eq(userTable.username, input.username),
+                            eq(userTable.status, "ACTIVE"),
+                            eq(userTable.dummy, false),
+                        ),
+                    );
+                if (!result || result.length !== 1) {
+                    throw new Error("User not found");
+                }
+                const user = result[0]!;
+
+                const valid = await verify(input.password, user.password);
+                if (!valid) {
+                    throw new Error("Invalid password");
+                }
+
+                const session = await lucia.createSession(user.id, {});
+                const cookie = lucia.createSessionCookie(session.id);
+                setSessionCookie(ctx.event.cookies, cookie);
+            } catch (error) {
+                console.error(error);
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Invalid username or password",
+                });
+            }
+        }),
+    logout: procedure.mutation(async ({ ctx }) => {
+        try {
+            const cookie = ctx.event.cookies.get(lucia.sessionCookieName);
+            if (cookie) {
+                await lucia.invalidateSession(cookie);
+            }
+        } catch (error) {
+            console.error(error);
+            throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: "Failed to logout",
+            });
+        }
+    }),
 });
