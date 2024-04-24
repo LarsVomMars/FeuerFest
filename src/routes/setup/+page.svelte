@@ -26,9 +26,11 @@
     };
 </script>
 
-<Form {submit}>
-    <TextInput bind:value={name} label="Name" />
-    <TextInput bind:value={username} label="Username" />
-    <EmailInput bind:value={email} label="Email" />
-    <SubmitButton text="Setup" />
-</Form>
+<div class="w-2/3 max-w-screen-sm">
+    <Form {submit}>
+        <TextInput bind:value={name} label="Name" />
+        <TextInput bind:value={username} label="Username" />
+        <EmailInput bind:value={email} label="Email" />
+        <SubmitButton text="Setup" />
+    </Form>
+</div>

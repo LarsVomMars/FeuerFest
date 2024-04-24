@@ -3,7 +3,6 @@
     import { QueryClientProvider } from "@tanstack/svelte-query";
     import type { LayoutServerData } from "./$types";
     import { trpc } from "$lib/trpc";
-    import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 
     export let data: LayoutServerData;
 
@@ -11,5 +10,7 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-    <slot />
+    <main class="w-full h-[100vh] bg-white text-dark dark:bg-dark dark:text-white flex flex-col justify-center items-center gap-y-4">
+        <slot />
+    </main>
 </QueryClientProvider>

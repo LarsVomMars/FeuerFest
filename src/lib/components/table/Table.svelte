@@ -18,7 +18,7 @@
     let currentRows = $derived(rows.slice(page * size, (page + 1) * size));
 </script>
 
-<table class="table-auto">
+<table class="table-auto w-full">
     <thead>
         <tr>
             {#each columns as { label }}
@@ -30,7 +30,7 @@
         {#each currentRows as row}
             <tr>
                 {#each columns as { key, cell }}
-                    <td>
+                    <td class="p-2">
                         <svelte:component
                             this={cell.component}
                             value={row[key]}

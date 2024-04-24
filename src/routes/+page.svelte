@@ -59,26 +59,24 @@
     let disabled = $state(false);
 </script>
 
-<main>
-    <h1>FeuerFest</h1>
+<h1>FeuerFest</h1>
 
-    <button>Logout</button>
+<!-- <button>Logout</button> -->
 
-    <!-- <ThemeToggle /> -->
-    <!-- <div class="w-1/2 m-auto">
-        <MutliDropdown {options} bind:selected />
-    </div> -->
+<!-- <ThemeToggle /> -->
+<!-- <div class="w-1/2 m-auto">
+    <MutliDropdown {options} bind:selected />
+</div> -->
 
-    <!-- <Table {rows} {columns} /> -->
-
-    <div class="w-1/2 m-auto">
-        <Form {submit}>
-            <TextInput label="Name" bind:value={name} />
-            <NumberInput label="Age" bind:value={age} />
-            <EmailInput label="Email" bind:value={email} />
-            <PasswordInput label="Password" bind:value={password} />
-            <ToggleButton label="Disabled" bind:checked={disabled} />
-            <SubmitButton text="Submit" />
-        </Form>
-    </div>
-</main>
+<!-- <Table {rows} {columns} /> -->
+<!--
+<div class="w-2/3 max-w-screen-sm">
+    <Form {submit}>
+        <TextInput label="Name" bind:value={name} required />
+        <NumberInput label="Age" bind:value={age} />
+        <EmailInput label="Email" bind:value={email} />
+        <PasswordInput label="Password" bind:value={password} />
+        <ToggleButton label="Disabled" bind:checked={disabled} />
+        <SubmitButton text="Submit" />
+    </Form>
+</div> -->

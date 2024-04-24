@@ -32,9 +32,9 @@
 </script>
 
 <div
-    class="w-full relative items-center flex cursor-text box-border border-2 border-black rounded-md"
+    class="w-full relative items-center flex cursor-text box-border border-2 border-primary rounded-md"
 >
-    <ul class="flex flex-1 flex-wrap border-2 rounded-md p-0 m-0">
+    <ul class="flex flex-1 flex-wrap rounded-md p-0 m-0">
         {#each selected as option}
             <li
                 role="option"
@@ -53,7 +53,7 @@
         <input
             type="text"
             onfocus={() => (open = true)}
-            class="border-none outline-none bg-none flex-1 rounded-none"
+            class="border-none outline-none bg-transparent flex-1 rounded-none"
         />
     </ul>
     {#if open}

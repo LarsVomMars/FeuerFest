@@ -17,6 +17,6 @@
         {id}
         {disabled}
         bind:checked
-        class="appearance-none relative w-[3em] h-[1.6em] bg-slate-300 rounded-[0.2em] cursor-pointer select-none before:content-[''] before:w-[1.2em] before:h-[1.2em] before:rounded-[0.2em] before:bg-slate-800 before:block before:absolute before:left-[0.2em] before:top-[0.2em] checked:bg-slate-500 checked:before:left-[1.6em] before:transition-all ease-in-out duration-300"
+        class="appearance-none relative w-[3em] h-[1.6em] bg-primary rounded-[0.2em] cursor-pointer select-none before:content-[''] before:w-[1.2em] before:h-[1.2em] before:rounded-[0.2em] before:bg-white dark:before:bg-dark before:block before:absolute before:left-[0.2em] before:top-[0.2em] checked:bg-secondary checked:before:left-[1.6em] before:transition-all ease-in-out duration-300"
     />
 </div>

@@ -30,7 +30,7 @@
     let validatePassword = $state("");
 </script>
 
-{#if $tokenRequest.data}
+<div class="w-2/3 max-w-screen-sm">
     <Form {submit}>
         <TextInput bind:value={name} label="Name" />
         <TextInput bind:value={username} label="Username" />
@@ -39,5 +39,5 @@
         <PasswordInput bind:value={validatePassword} label="Confirm Password" />
         <SubmitButton text="Activate" />
     </Form>
-{/if}
+</div>
 
