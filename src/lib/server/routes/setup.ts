@@ -1,4 +1,3 @@
-import { count } from "drizzle-orm";
 import db from "../db";
 import { userTable } from "../db/schema";
 import { procedure, router } from "../trpc";

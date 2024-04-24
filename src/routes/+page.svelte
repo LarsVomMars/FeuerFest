@@ -61,6 +61,7 @@
 </script>
 
 <Heading title="FeuerFest" />
+<a href="/events">Events</a>
 
 <!-- <button>Logout</button> -->
 
