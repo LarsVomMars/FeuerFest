@@ -1,5 +1,9 @@
 <script lang="ts">
-    import Form, { PasswordInput, SubmitButton, TextInput } from "$lib/components/form";
+    import Form, {
+        PasswordInput,
+        SubmitButton,
+        TextInput,
+    } from "$lib/components/form";
     import { trpc } from "$lib/trpc";
 
     const loginRequest = trpc.auth.login.mutation();

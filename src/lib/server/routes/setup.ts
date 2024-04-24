@@ -6,7 +6,8 @@ import { z } from "zod";
 import { createActivationToken } from "$lib/util/token";
 import { sendActivationMail } from "$lib/util/mail";
 
-const isSetup = async () => (await db.select().from(userTable).limit(1)).length > 0;
+const isSetup = async () =>
+    (await db.select().from(userTable).limit(1)).length > 0;
 const validateSetup = async () => {
     if (await isSetup())
         throw new TRPCError({

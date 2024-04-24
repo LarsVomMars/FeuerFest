@@ -12,6 +12,9 @@
     };
 </script>
 
-<form {onsubmit} class="flex flex-1 flex-col w-full items-center justify-center space-y-8 p-4">
+<form
+    {onsubmit}
+    class="flex flex-1 flex-col w-full items-center justify-center space-y-8 p-4"
+>
     <slot />
 </form>

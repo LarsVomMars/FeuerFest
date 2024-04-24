@@ -1,5 +1,11 @@
 <script lang="ts">
-    import Form, { NumberInput, SubmitButton, TextInput, EmailInput, PasswordInput } from "$lib/components/form";
+    import Form, {
+        NumberInput,
+        SubmitButton,
+        TextInput,
+        EmailInput,
+        PasswordInput,
+    } from "$lib/components/form";
     import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
     import Heading from "$lib/components/Heading.svelte";
     import MutliDropdown from "$lib/components/MutliDropdown.svelte";

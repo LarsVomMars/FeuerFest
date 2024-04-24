@@ -1,6 +1,10 @@
 <script lang="ts">
     import Heading from "$lib/components/Heading.svelte";
-    import Form, { TextInput, DateTimeInput, SubmitButton } from "$lib/components/form";
+    import Form, {
+        TextInput,
+        DateTimeInput,
+        SubmitButton,
+    } from "$lib/components/form";
     import { trpc } from "$lib/trpc";
 
     const createEventRequest = trpc.events.create.mutation();

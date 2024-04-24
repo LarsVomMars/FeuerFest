@@ -17,12 +17,9 @@
 
     {#each Array.from({ length: pages }).map((_, i) => i) as $i}
         {#if $i <= page + 3 && $i >= page - 3}
-        <button
-        class:font-bold={$i === page}
-        on:click={() => page = $i}
-    >
-        {$i + 1}
-    </button>
+            <button class:font-bold={$i === page} on:click={() => (page = $i)}>
+                {$i + 1}
+            </button>
         {/if}
     {/each}
 

@@ -1,6 +1,11 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import Form, { TextInput, EmailInput, PasswordInput, SubmitButton } from "$lib/components/form";
+    import Form, {
+        TextInput,
+        EmailInput,
+        PasswordInput,
+        SubmitButton,
+    } from "$lib/components/form";
     import { trpc } from "$lib/trpc";
 
     const token = $page.params.token || "";
@@ -40,4 +45,3 @@
         <SubmitButton text="Activate" />
     </Form>
 </div>
-
