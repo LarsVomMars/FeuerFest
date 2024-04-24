@@ -1,6 +1,7 @@
 <script lang="ts">
     import Form, { NumberInput, SubmitButton, TextInput, EmailInput, PasswordInput } from "$lib/components/form";
     import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
+    import Heading from "$lib/components/Heading.svelte";
     import MutliDropdown from "$lib/components/MutliDropdown.svelte";
     import { columnBuilder, type Column } from "$lib/components/table";
     import Table, { EditTextCell } from "$lib/components/table";
@@ -59,7 +60,7 @@
     let disabled = $state(false);
 </script>
 
-<h1>FeuerFest</h1>
+<Heading title="FeuerFest" />
 
 <!-- <button>Logout</button> -->
 

@@ -20,6 +20,8 @@ const lucia = new Lucia(adapter, {
         name: user.name,
         username: user.username,
         dummy: user.dummy,
+        role: user.role,
+        status: user.status,
     }),
 });
 
