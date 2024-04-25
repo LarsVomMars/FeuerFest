@@ -2,7 +2,7 @@ import db from "$lib/server/db";
 import { eventStaffTable, eventTable } from "$lib/server/db/schema";
 import { procedure, router } from "$lib/server/trpc";
 import { z } from "zod";
-import { eq, and, sql, count } from "drizzle-orm";
+import { eq, and, sql, count, lte, gte, SQL, gt, lt } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import type { User } from "lucia";
 
@@ -41,10 +41,59 @@ export const validateEventPermissions = async (
     }
 };
 
-export const generateSlug = (name: string, start: Date) =>
+const generateSlug = (name: string, start: Date) =>
     `${start.getFullYear()}-${name.toLowerCase().replace(/\s+/g, "_")}`;
 
+const queryEvents = (user: User, ...where: SQL[]) => {
+    return db
+        .selectDistinct()
+        .from(eventTable)
+        .leftJoin(eventStaffTable, eq(eventStaffTable.eventId, eventTable.id))
+        .where(
+            and(
+                ...where,
+                user.role !== "OWNER"
+                    ? eq(eventStaffTable.userId, user.id)
+                    : undefined,
+            ),
+        )
+        .orderBy(eventTable.start);
+};
+
 export default router({
+    listActive: procedure.query(async ({ ctx }) => {
+        const now = new Date();
+        const events = await queryEvents(
+            ctx.user!,
+            lte(eventTable.start, now),
+            gte(eventTable.end, now),
+        );
+        return events;
+    }),
+    listUpcoming: procedure.query(async ({ ctx }) => {
+        const now = new Date();
+        const events = await queryEvents(ctx.user!, gt(eventTable.start, now));
+        return events;
+    }),
+    listPast: procedure.query(async ({ ctx }) => {
+        const now = new Date();
+        const events = await queryEvents(ctx.user!, lt(eventTable.end, now));
+        return events;
+    }),
+    get: procedure
+        .input(z.object({ slug: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const events = await queryEvents(
+                ctx.user!,
+                eq(eventTable.slug, input.slug),
+            );
+            if (events.length !== 1)
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Event not found",
+                });
+            return events[0];
+        }),
     create: procedure
         .input(
             z.object({
