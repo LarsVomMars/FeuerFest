@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import Form, {
         TextInput,
@@ -12,7 +13,7 @@
     const tokenRequest = trpc.auth.validateActivationToken.query({ token });
     const activateRequest = trpc.auth.activate.mutation({
         onSuccess: () => {
-            console.log("Success");
+            goto("/auth/login");
         },
         onError: console.error,
     });

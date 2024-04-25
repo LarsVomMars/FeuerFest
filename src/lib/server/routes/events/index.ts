@@ -111,7 +111,8 @@ export default router({
                     message: "Unauthorized",
                 });
 
-            const { name, description, location, start, end } = input;
+            const { description, location, start, end } = input;
+            const name = input.name.trim();
             let slug = generateSlug(name, start);
 
             try {
@@ -142,6 +143,7 @@ export default router({
 
                 if (result.length !== 1)
                     throw new Error("Could not create event");
+                return slug;
             } catch (e) {
                 console.error(e);
                 throw new TRPCError({

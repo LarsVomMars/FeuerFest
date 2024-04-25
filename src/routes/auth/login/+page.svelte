@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import Form, {
         PasswordInput,
         SubmitButton,
@@ -6,7 +7,11 @@
     } from "$lib/components/form";
     import { trpc } from "$lib/trpc";
 
-    const loginRequest = trpc.auth.login.mutation();
+    const loginRequest = trpc.auth.login.mutation({
+        onSuccess: () => {
+            goto("/");
+        },
+    });
 
     const submit = () => {
         $loginRequest.mutate({

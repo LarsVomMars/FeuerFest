@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import type { PageServerLoad } from "./$types";
 import { trpcServer } from "$lib/server/server";
 import { redirect } from "@sveltejs/kit";
@@ -11,9 +10,6 @@ export const load: PageServerLoad = async (event) => {
         await trpcServer.events.get.ssr({ ...event.params }, event);
     } catch (e) {
         console.error(e);
-        throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Event not found",
-        });
+        throw redirect(302, "/events");
     }
 };
