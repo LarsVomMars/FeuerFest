@@ -11,7 +11,7 @@
     const createEventRequest = trpc.events.create.mutation({
         onSuccess: (slug) => {
             goto(`/events/${slug}`);
-        }
+        },
     });
 
     const submit = () => {

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { eq, and, sql, count, lte, gte, SQL, gt, lt } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import type { User } from "lucia";
+import products from "./products";
 
 export const validateEventPermissions = async (
     slug: string,
@@ -25,7 +26,7 @@ export const validateEventPermissions = async (
             .from(eventStaffTable)
             .where(
                 and(
-                    eq(eventStaffTable.eventId, event.id),
+                    eq(eventStaffTable.event, event.slug),
                     eq(eventStaffTable.userId, user.id),
                 ),
             );
@@ -48,7 +49,7 @@ const queryEvents = (user: User, ...where: SQL[]) => {
     return db
         .selectDistinct()
         .from(eventTable)
-        .leftJoin(eventStaffTable, eq(eventStaffTable.eventId, eventTable.id))
+        .leftJoin(eventStaffTable, eq(eventStaffTable.event, eventTable.slug))
         .where(
             and(
                 ...where,
@@ -61,6 +62,7 @@ const queryEvents = (user: User, ...where: SQL[]) => {
 };
 
 export default router({
+    products,
     listActive: procedure.query(async ({ ctx }) => {
         const now = new Date();
         const events = await queryEvents(
@@ -128,21 +130,15 @@ export default router({
                 if (events[0] && events[0].count > 0)
                     slug += `-${events[0].count + 1}`;
 
-                const result = await db
-                    .insert(eventTable)
-                    .values({
-                        name,
-                        description,
-                        location,
-                        start,
-                        end,
-                        slug,
-                        createdBy: ctx.user!.id,
-                    })
-                    .returning({ id: eventTable.id });
-
-                if (result.length !== 1)
-                    throw new Error("Could not create event");
+                await db.insert(eventTable).values({
+                    name,
+                    description,
+                    location,
+                    start,
+                    end,
+                    slug,
+                    createdBy: ctx.user!.id,
+                });
                 return slug;
             } catch (e) {
                 console.error(e);

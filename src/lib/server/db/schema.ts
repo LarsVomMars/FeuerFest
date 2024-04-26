@@ -7,6 +7,7 @@ import {
     integer,
     pgEnum,
     primaryKey,
+    unique,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN", "OWNER"]);
@@ -43,8 +44,7 @@ export const sessionTable = pgTable("Session", {
 });
 
 export const eventTable = pgTable("Event", {
-    id: serial("id").primaryKey().notNull(),
-    slug: text("slug").notNull().unique(),
+    slug: text("slug").primaryKey().notNull(),
 
     name: text("name").notNull(),
     description: text("description").notNull(),
@@ -63,15 +63,36 @@ export const eventTable = pgTable("Event", {
 export const eventStaffTable = pgTable(
     "EventStaff",
     {
-        eventId: integer("event_id")
+        event: text("event_slug")
             .notNull()
-            .references(() => eventTable.id),
+            .references(() => eventTable.slug),
         userId: integer("user_id")
             .notNull()
             .references(() => userTable.id),
         role: roleEnum("role").default("USER").notNull(),
     },
     (table) => ({
-        pk: primaryKey({ columns: [table.eventId, table.userId] }),
+        pk: primaryKey({ columns: [table.event, table.userId] }),
+    }),
+);
+
+export const productTable = pgTable(
+    "Product",
+    {
+        id: serial("id").primaryKey().notNull(),
+        name: text("name").notNull(),
+        description: text("description").notNull(),
+        price: integer("price").notNull(),
+        createdAt: timestamp("createdAt").defaultNow().notNull(),
+        updatedAt: timestamp("updatedAt"),
+        createdBy: integer("createdBy")
+            .notNull()
+            .references(() => userTable.id),
+        event: text("event_slug")
+            .notNull()
+            .references(() => eventTable.slug),
+    },
+    (table) => ({
+        unq: unique("product_name").on(table.name, table.description),
     }),
 );
