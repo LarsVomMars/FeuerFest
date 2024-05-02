@@ -60,7 +60,14 @@
                     </td>
                 {/each}
                 <td>
-                    <button on:click={() => add!(data)}>Neu</button>
+                    <button
+                        on:click={() => {
+                        add!(data);
+                        data = {};
+                        }}
+                    >
+                        Neu
+                    </button>
                 </td>
             </tr>
         </tfoot>

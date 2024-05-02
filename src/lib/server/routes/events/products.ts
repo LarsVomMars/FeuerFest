@@ -39,6 +39,8 @@ export default router({
                 description: z.string().default(""),
                 price: z.number(),
                 type: z.enum(productTypeEnum.enumValues),
+                backgroundColor: z.string().default("#FFFFFF"),
+                textColor: z.string().default("#000000"),
             }),
         )
         .mutation(async ({ ctx, input }) => {
@@ -51,10 +53,7 @@ export default router({
 
             try {
                 await db.insert(productTable).values({
-                    name: input.name,
-                    description: input.description,
-                    price: input.price,
-                    type: input.type,
+                    ...input,
                     event: input.slug,
                     createdBy: ctx.user!.id,
                 });
@@ -75,6 +74,8 @@ export default router({
                 description: z.string().optional(),
                 price: z.number().optional(),
                 type: z.enum(productTypeEnum.enumValues).optional(),
+                backgroundColor: z.string().optional().default("#FFFFFF"),
+                textColor: z.string().optional().default("#000000"),
             }),
         )
         .mutation(async ({ ctx, input }) => {

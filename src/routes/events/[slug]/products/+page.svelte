@@ -5,11 +5,12 @@
     import Table, {
         EditTextCell,
         EditSelectCell,
+        EditNumberCell,
         DeleteAction,
         columnBuilder,
         type Column,
-        EditNumberCell,
     } from "$lib/components/table";
+    import EditColorCell from "$lib/components/table/cells/color/EditColorCell.svelte";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
@@ -86,6 +87,20 @@
                 update: makeOnChange("type", row),
             }),
         }),
+        columnBuilder("textColor", "Text", {
+            component: EditColorCell,
+            props: (row) => ({
+                update: makeOnChange("textColor", row),
+                defaultColor: "#000000",
+            }),
+        }),
+        columnBuilder("backgroundColor", "Hintergrund", {
+            component: EditColorCell,
+            props: (row) => ({
+                update: makeOnChange("backgroundColor", row),
+                defaultColor: "#ffffff",
+            }),
+        }),
         columnBuilder("action", "", {
             component: DeleteAction,
             props: (row) => ({
@@ -107,6 +122,8 @@
             description: data.description,
             price: +data.price,
             type: data.type,
+            backgroundColor: data.backgroundColor,
+            textColor: data.textColor,
         });
     };
 </script>

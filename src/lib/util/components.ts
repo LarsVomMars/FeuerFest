@@ -1,4 +1,5 @@
 import {
+    EditColorCell,
     EditNumberCell,
     EditSelectCell,
     EditTextCell,
@@ -14,6 +15,8 @@ export const getEditableCell = (component: ComponentType): ComponentType => {
             return EditNumberCell;
         case "SelectCell":
             return EditSelectCell;
+        case "ColorCell":
+            return EditColorCell;
         default:
             return EditTextCell;
     }

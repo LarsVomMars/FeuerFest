@@ -8,6 +8,7 @@ import {
     pgEnum,
     primaryKey,
     unique,
+    varchar,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN", "OWNER"]);
@@ -87,6 +88,9 @@ export const productTable = pgTable(
         description: text("description").notNull(),
         price: integer("price").notNull(),
         type: productTypeEnum("type").notNull(),
+
+        backgroundColor: varchar("backgroundColor", { length: 7 }),
+        textColor: varchar("textColor", { length: 7 }),
 
         createdAt: timestamp("createdAt").defaultNow().notNull(),
         updatedAt: timestamp("updatedAt"),
