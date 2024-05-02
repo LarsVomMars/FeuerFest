@@ -25,4 +25,37 @@ export default router({
                 });
             }
         }),
+    create: procedure
+        .input(
+            z.object({
+                slug: z.string(),
+                name: z.string(),
+                description: z.string().default(""),
+                price: z.number(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const role = await validateEventPermissions(input.slug, ctx.user!);
+            if (role === "USER")
+                throw new TRPCError({
+                    code: "UNAUTHORIZED",
+                    message: "Unauthorized",
+                });
+
+            try {
+                await db.insert(productTable).values({
+                    name: input.name,
+                    description: input.description,
+                    price: input.price,
+                    event: input.slug,
+                    createdBy: ctx.user!.id,
+                });
+            } catch (e) {
+                console.error(e);
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Could not create product",
+                });
+            }
+        }),
 });

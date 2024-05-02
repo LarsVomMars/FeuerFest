@@ -1,14 +1,19 @@
 <script lang="ts">
     type Props = {
         value: string;
-        onclick: () => void;
+        onclick?: () => void;
     };
     let { value, onclick }: Props = $props();
+
+    let cursor = onclick ? "cursor-pointer" : "cursor-default";
 </script>
 
 <span
+    class="w-full {cursor}"
     {onclick}
     role="button"
     tabindex="0"
-    on:keypress={(e) => e.key === "Enter" && onclick()}>{value}</span
+    onkeypress={(e) => e.key === "Enter" && onclick?.()}
 >
+    {value}
+</span>

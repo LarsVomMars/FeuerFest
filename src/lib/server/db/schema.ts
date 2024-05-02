@@ -76,6 +76,8 @@ export const eventStaffTable = pgTable(
     }),
 );
 
+// export const productTypeTable = pgTable();
+
 export const productTable = pgTable(
     "Product",
     {
