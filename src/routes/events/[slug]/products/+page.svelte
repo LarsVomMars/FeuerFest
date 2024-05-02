@@ -5,6 +5,7 @@
     import Table, {
         TextCell,
         NumberCell,
+        EditSelectCell,
         columnBuilder,
         type Column,
     } from "$lib/components/table";
@@ -25,6 +26,21 @@
 
     // let rows: Row[] = $derived([...products]);
 
+    const options = [
+        {
+            label: "Drinken",
+            value: "DRINK",
+        },
+        {
+            label: "Essen",
+            value: "FOOD",
+        },
+        {
+            label: "Bar",
+            value: "BAR",
+        },
+    ];
+
     const columns: Column<Row>[] = [
         columnBuilder("name", "Name", {
             component: TextCell,
@@ -36,7 +52,10 @@
             component: NumberCell,
         }),
         columnBuilder("type", "Art", {
-            component: TextCell,
+            component: EditSelectCell,
+            props: () => ({
+                options,
+            }),
         }),
     ];
 

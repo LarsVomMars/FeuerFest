@@ -1,13 +1,19 @@
-import { EditNumberCell, EditTextCell } from "$lib/components/table";
+import {
+    EditNumberCell,
+    EditSelectCell,
+    EditTextCell,
+} from "$lib/components/table";
 import type { ComponentType } from "svelte";
 
 export const getEditableCell = (component: ComponentType): ComponentType => {
-    if (component.name.startsWith("Editable")) return component;
+    if (component.name.startsWith("Edit")) return component;
     switch (component.name) {
         case "TextCell":
             return EditTextCell;
         case "NumberCell":
             return EditNumberCell;
+        case "SelectCell":
+            return EditSelectCell;
         default:
             return EditTextCell;
     }
