@@ -9,7 +9,7 @@
 </script>
 
 <span
-    class="w-full {cursor}"
+    class="w-full {cursor} block"
     {onclick}
     role="button"
     tabindex="0"

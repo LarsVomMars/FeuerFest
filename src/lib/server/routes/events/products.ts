@@ -4,7 +4,7 @@ import { validateEventPermissions } from ".";
 import { TRPCError } from "@trpc/server";
 import db from "$lib/server/db";
 import { productTable, productTypeEnum } from "$lib/server/db/schema";
-import { asc, eq, sql, type AnyColumn } from "drizzle-orm";
+import { and, asc, eq, sql, type AnyColumn } from "drizzle-orm";
 
 const asclower = (column: AnyColumn) => asc(sql`lower(${column})`);
 
@@ -63,6 +63,46 @@ export default router({
                 throw new TRPCError({
                     code: "BAD_REQUEST",
                     message: "Could not create product",
+                });
+            }
+        }),
+    update: procedure
+        .input(
+            z.object({
+                slug: z.string(),
+                id: z.number(),
+                name: z.string().optional(),
+                description: z.string().optional(),
+                price: z.number().optional(),
+                type: z.enum(productTypeEnum.enumValues).optional(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const role = await validateEventPermissions(input.slug, ctx.user!);
+            if (role === "USER")
+                throw new TRPCError({
+                    code: "UNAUTHORIZED",
+                    message: "Unauthorized",
+                });
+
+            try {
+                await db
+                    .update(productTable)
+                    .set({
+                        ...input,
+                        updatedAt: new Date(),
+                    })
+                    .where(
+                        and(
+                            eq(productTable.id, input.id),
+                            eq(productTable.event, input.slug),
+                        ),
+                    );
+            } catch (e) {
+                console.error(e);
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Could not update product",
                 });
             }
         }),

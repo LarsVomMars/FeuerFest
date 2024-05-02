@@ -4,16 +4,21 @@
     import { trpc } from "$lib/trpc";
     import Table, {
         TextCell,
+        EditTextCell,
         NumberCell,
         EditSelectCell,
         columnBuilder,
         type Column,
+        EditNumberCell,
     } from "$lib/components/table";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
     const productRequest = trpc.events.products.list.query({ slug });
     const createRequest = trpc.events.products.create.mutation({
+        onSuccess: () => $productRequest.refetch(),
+    });
+    const updateRequest = trpc.events.products.update.mutation({
         onSuccess: () => $productRequest.refetch(),
     });
 
@@ -41,20 +46,42 @@
         },
     ];
 
+    const makeOnChange = <T,>(name: string, row?: Row) =>
+        row
+            ? (value: T) => {
+                  $updateRequest.mutate({
+                      slug,
+                      id: row.id,
+                      [name]: value,
+                  });
+              }
+            : undefined;
+
     const columns: Column<Row>[] = [
         columnBuilder("name", "Name", {
-            component: TextCell,
+            component: EditTextCell,
+            props: (row) => ({
+                update: makeOnChange("name", row),
+            }),
         }),
         columnBuilder("description", "Beschreibung", {
-            component: TextCell,
+            component: EditTextCell,
+            props: (row) => ({
+                update: makeOnChange("description", row),
+            }),
         }),
         columnBuilder("price", "Preis", {
-            component: NumberCell,
+            component: EditNumberCell,
+            props: (row) => ({
+                update: makeOnChange("price", row),
+                adornment: "€",
+            }),
         }),
         columnBuilder("type", "Art", {
             component: EditSelectCell,
-            props: () => ({
+            props: (row) => ({
                 options,
+                update: makeOnChange("type", row),
             }),
         }),
     ];

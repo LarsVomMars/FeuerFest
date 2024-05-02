@@ -14,9 +14,12 @@
         isEditing = !isEditing;
         if (!isEditing && update) {
             update(value);
+        } else if (isEditing) {
+            setTimeout(() => input?.focus(), 0);
         }
     }
 
+    let input = $state<HTMLInputElement>();
     let isEditing = $state(edit);
 </script>
 
@@ -27,6 +30,7 @@
         bind:value
         onblur={toggleEditing}
         onkeydown={(event) => event.key === "Enter" && toggleEditing()}
+        bind:this={input}
     />
 {:else}
     <TextCell {value} onclick={toggleEditing} />

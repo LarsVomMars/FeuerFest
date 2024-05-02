@@ -5,18 +5,22 @@
         value: number;
         edit?: boolean;
         update?: (value: number) => void;
+        adornment?: string;
     };
 
-    let { value, update, edit = false }: Props = $props();
+    let { value, update, adornment, edit = false }: Props = $props();
 
     function toggleEditing() {
         if (edit) return;
         isEditing = !isEditing;
         if (!isEditing && update) {
             update(value);
+        } else if (isEditing) {
+            setTimeout(() => input?.focus(), 0);
         }
     }
 
+    let input = $state<HTMLInputElement>();
     let isEditing = $state(edit);
 </script>
 
@@ -27,7 +31,8 @@
         bind:value
         onblur={toggleEditing}
         onkeydown={(event) => event.key === "Enter" && toggleEditing()}
+        bind:this={input}
     />
 {:else}
-    <NumberCell {value} onclick={toggleEditing} />
+    <NumberCell {value} {adornment} onclick={toggleEditing} />
 {/if}
