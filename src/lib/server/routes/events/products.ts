@@ -106,4 +106,31 @@ export default router({
                 });
             }
         }),
+    delete: procedure
+        .input(z.object({ slug: z.string(), id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const role = await validateEventPermissions(input.slug, ctx.user!);
+            if (role === "USER")
+                throw new TRPCError({
+                    code: "UNAUTHORIZED",
+                    message: "Unauthorized",
+                });
+
+            try {
+                await db
+                    .delete(productTable)
+                    .where(
+                        and(
+                            eq(productTable.id, input.id),
+                            eq(productTable.event, input.slug),
+                        ),
+                    );
+            } catch (e) {
+                console.error(e);
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Could not delete product",
+                });
+            }
+        }),
 });

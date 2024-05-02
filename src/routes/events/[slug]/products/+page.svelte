@@ -3,10 +3,9 @@
     import Heading from "$lib/components/Heading.svelte";
     import { trpc } from "$lib/trpc";
     import Table, {
-        TextCell,
         EditTextCell,
-        NumberCell,
         EditSelectCell,
+        DeleteAction,
         columnBuilder,
         type Column,
         EditNumberCell,
@@ -19,6 +18,9 @@
         onSuccess: () => $productRequest.refetch(),
     });
     const updateRequest = trpc.events.products.update.mutation({
+        onSuccess: () => $productRequest.refetch(),
+    });
+    const deleteRequest = trpc.events.products.delete.mutation({
         onSuccess: () => $productRequest.refetch(),
     });
 
@@ -82,6 +84,18 @@
             props: (row) => ({
                 options,
                 update: makeOnChange("type", row),
+            }),
+        }),
+        columnBuilder("action", "", {
+            component: DeleteAction,
+            props: (row) => ({
+                ondelete: () =>
+                    row
+                        ? $deleteRequest.mutate({
+                              slug,
+                              id: row.id,
+                          })
+                        : undefined,
             }),
         }),
     ];

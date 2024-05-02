@@ -18,7 +18,9 @@
     let { rows, columns, add }: Props<T> = $props();
 
     let currentRows = $derived(rows.slice(page * size, (page + 1) * size));
-    let data: Record<string, any> = $state(columns.reduce((acc, { key }) => ({ ...acc, [key]: undefined }), {}));
+    let data: Record<string, any> = $state(
+        columns.reduce((acc, { key }) => ({ ...acc, [key]: undefined }), {}),
+    );
 </script>
 
 <table class="table-auto w-full">
@@ -47,7 +49,7 @@
     {#if add}
         <tfoot>
             <tr>
-                {#each columns as { key, cell }}
+                {#each columns.filter((c) => c.label !== "") as { key, cell }}
                     <td class="p-2">
                         <svelte:component
                             this={getEditableCell(cell.component)}
