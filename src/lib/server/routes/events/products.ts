@@ -3,8 +3,10 @@ import { z } from "zod";
 import { validateEventPermissions } from ".";
 import { TRPCError } from "@trpc/server";
 import db from "$lib/server/db";
-import { productTable } from "$lib/server/db/schema";
-import { eq } from "drizzle-orm";
+import { productTable, productTypeEnum } from "$lib/server/db/schema";
+import { asc, eq, sql, type AnyColumn } from "drizzle-orm";
+
+const asclower = (column: AnyColumn) => asc(sql`lower(${column})`);
 
 export default router({
     list: procedure
@@ -15,7 +17,11 @@ export default router({
                 const products = await db
                     .select()
                     .from(productTable)
-                    .where(eq(productTable.event, input.slug));
+                    .where(eq(productTable.event, input.slug))
+                    .orderBy(
+                        asclower(productTable.name),
+                        asclower(productTable.description),
+                    );
                 return products;
             } catch (e) {
                 console.error(e);
@@ -32,6 +38,7 @@ export default router({
                 name: z.string(),
                 description: z.string().default(""),
                 price: z.number(),
+                type: z.enum(productTypeEnum.enumValues),
             }),
         )
         .mutation(async ({ ctx, input }) => {
@@ -47,6 +54,7 @@ export default router({
                     name: input.name,
                     description: input.description,
                     price: input.price,
+                    type: input.type,
                     event: input.slug,
                     createdBy: ctx.user!.id,
                 });

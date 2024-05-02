@@ -2,20 +2,26 @@
     import { page } from "$app/stores";
     import Heading from "$lib/components/Heading.svelte";
     import { trpc } from "$lib/trpc";
-    import Table, { TextCell, columnBuilder, type Column } from "$lib/components/table";
-
+    import Table, {
+        TextCell,
+        NumberCell,
+        columnBuilder,
+        type Column,
+    } from "$lib/components/table";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
     const productRequest = trpc.events.products.list.query({ slug });
-    const createRequest = trpc.events.products.create.mutation({ onSuccess: () => $productRequest.refetch()});
+    const createRequest = trpc.events.products.create.mutation({
+        onSuccess: () => $productRequest.refetch(),
+    });
 
     let event = $eventRequest.data?.Event;
 
     // Prob wait for library update to use runes
     $: rows = $productRequest.data ?? [];
 
-    type Row = typeof rows[number];
+    type Row = (typeof rows)[number];
 
     // let rows: Row[] = $derived([...products]);
 
@@ -27,6 +33,9 @@
             component: TextCell,
         }),
         columnBuilder("price", "Preis", {
+            component: NumberCell,
+        }),
+        columnBuilder("type", "Art", {
             component: TextCell,
         }),
     ];
@@ -37,6 +46,7 @@
             name: data.name,
             description: data.description,
             price: +data.price,
+            type: data.type,
         });
     };
 </script>

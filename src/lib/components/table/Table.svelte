@@ -58,7 +58,7 @@
                     </td>
                 {/each}
                 <td>
-                    <button on:click={() => add(data)}>Add</button>
+                    <button on:click={() => add!(data)}>Neu</button>
                 </td>
             </tr>
         </tfoot>

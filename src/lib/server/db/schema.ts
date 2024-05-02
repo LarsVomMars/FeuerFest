@@ -16,6 +16,7 @@ export const userStatusEnum = pgEnum("userStatus", [
     "ACTIVE",
     "INACTIVE",
 ]);
+export const productTypeEnum = pgEnum("productType", ["FOOD", "DRINK", "BAR"]);
 
 export const userTable = pgTable("User", {
     id: serial("id").primaryKey().notNull(),
@@ -76,7 +77,7 @@ export const eventStaffTable = pgTable(
     }),
 );
 
-// export const productTypeTable = pgTable();
+// export const productTypeTable = pgTable(); // TODO: make this a table instead of an enum
 
 export const productTable = pgTable(
     "Product",
@@ -85,6 +86,8 @@ export const productTable = pgTable(
         name: text("name").notNull(),
         description: text("description").notNull(),
         price: integer("price").notNull(),
+        type: productTypeEnum("type").notNull(),
+
         createdAt: timestamp("createdAt").defaultNow().notNull(),
         updatedAt: timestamp("updatedAt"),
         createdBy: integer("createdBy")
