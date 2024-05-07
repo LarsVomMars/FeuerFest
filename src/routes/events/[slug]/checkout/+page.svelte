@@ -8,6 +8,7 @@
     } from "$lib/components/MultiDropdown.svelte";
     import Card from "./Card.svelte";
     import NumberInput from "$lib/components/form/inputs/NumberInput.svelte";
+    import SubmitButton from "$lib/components/form/inputs/SubmitButton.svelte";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
@@ -71,7 +72,7 @@
 
 <Heading title={event?.name + " - Kasse"} />
 <div class="w-full flex">
-    <div class="w-1/5 p-2">
+    <div class="w-1/5 p-2 space-y-2">
         <MultiDropdown bind:selected {options} start={options} />
         <table class="w-full">
             <tbody>
@@ -79,7 +80,11 @@
                     <tr>
                         <td>{item.count}x</td>
                         <td>{item.name}</td>
-                        <td class="text-right">{item.price.toFixed ? item.price.toFixed(2) : item.price}€</td>
+                        <td class="text-right">
+                            {item.price.toFixed
+                                ? item.price.toFixed(2)
+                                : item.price}€
+                        </td>
                     </tr>
                 {/each}
             </tbody>
@@ -92,6 +97,14 @@
                 </tfoot>
             {/if}
         </table>
+        {#if items.length}
+            <button
+                type="submit"
+                class="w-full rounded-lg bg-secondary p-2 hover:bg-secondary-200 disabled:bg-secondary-300 text-white"
+            >
+                Bestellen
+            </button>
+        {/if}
     </div>
     <div class="w-4/5 p-2 flex h-full items-center flex-wrap justify-center">
         {#each availableProducts as product}
@@ -102,7 +115,7 @@
             onclick={addCustomItem}
         >
             <h2 class="text-2xl font-bold">Sonstiges</h2>
-            <br>
+            <br />
             <NumberInput label="" bind:value />
         </button>
     </div>

@@ -87,7 +87,9 @@ export const productTable = pgTable(
         id: serial("id").primaryKey().notNull(),
         name: text("name").notNull(),
         description: text("description").notNull(),
-        price: decimal("price", { precision: 10, scale: 2 }).$type<number>().notNull(),
+        price: decimal("price", { precision: 10, scale: 2 })
+            .$type<number>()
+            .notNull(),
         type: productTypeEnum("type").notNull(),
 
         backgroundColor: varchar("backgroundColor", { length: 7 }),
@@ -106,3 +108,34 @@ export const productTable = pgTable(
         unq: unique("product_name").on(table.name, table.description),
     }),
 );
+
+export const orderTable = pgTable("Order", {
+    id: serial("id").primaryKey().notNull(),
+    event: text("event_slug")
+        .notNull()
+        .references(() => eventTable.slug),
+
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    createdBy: integer("createdBy")
+        .notNull()
+        .references(() => userTable.id),
+});
+
+export const orderItemTable = pgTable("OrderItem", {
+    id: serial("id").primaryKey().notNull(),
+    event: text("event_slug")
+        .notNull()
+        .references(() => eventTable.slug),
+    order: integer("order_id")
+        .notNull()
+        .references(() => orderTable.id),
+    product: integer("product_id").references(() => productTable.id),
+
+    quantity: integer("quantity").notNull(),
+    price: decimal("price", { precision: 10, scale: 2 }),
+    total: decimal("total", { precision: 10, scale: 2 })
+        .$type<number>()
+        .notNull(),
+
+    voucher: boolean("voucher").default(false).notNull(),
+});
