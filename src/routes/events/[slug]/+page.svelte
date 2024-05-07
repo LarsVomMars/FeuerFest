@@ -9,3 +9,4 @@
 
 <Heading title={$eventRequest.data?.Event.name ?? ""} />
 <a href={`/events/${slug}/products`}>Produkte</a>
+<a href={`/events/${slug}/checkout`}>Kasse</a>

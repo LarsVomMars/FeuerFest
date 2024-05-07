@@ -6,6 +6,7 @@ import { eq, and, sql, count, lte, gte, SQL, gt, lt } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import type { User } from "lucia";
 import products from "./products";
+import checkout from "./checkout";
 
 export const validateEventPermissions = async (
     slug: string,
@@ -63,6 +64,7 @@ const queryEvents = (user: User, ...where: SQL[]) => {
 
 export default router({
     products,
+    checkout,
     listActive: procedure.query(async ({ ctx }) => {
         const now = new Date();
         const events = await queryEvents(
