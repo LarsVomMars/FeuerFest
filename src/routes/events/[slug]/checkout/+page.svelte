@@ -7,6 +7,7 @@
         type Option,
     } from "$lib/components/MultiDropdown.svelte";
     import Card from "./Card.svelte";
+    import NumberInput from "$lib/components/form/inputs/NumberInput.svelte";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
@@ -41,7 +42,31 @@
             count: order.filter((i) => i === item).length,
         })),
     );
-    let total = $derived(order.reduce((acc, item) => +acc + +item.price, 0).toFixed(2));
+    let total = $derived(
+        order.reduce((acc, item) => +acc + +item.price, 0).toFixed(2),
+    );
+
+    let value = $state<number>();
+    const addCustomItem = () => {
+        if (value === undefined) return;
+        order = [
+            ...order,
+            {
+                id: -1,
+                name: "Sonstiges",
+                description: "",
+                price: value,
+                type: "FOOD",
+                textColor: "black",
+                backgroundColor: "white",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                createdBy: 0,
+                event: "",
+            },
+        ];
+        value = undefined;
+    };
 </script>
 
 <Heading title={event?.name + " - Kasse"} />
@@ -54,7 +79,7 @@
                     <tr>
                         <td>{item.count}x</td>
                         <td>{item.name}</td>
-                        <td class="text-right">{item.price}€</td>
+                        <td class="text-right">{item.price.toFixed ? item.price.toFixed(2) : item.price}€</td>
                     </tr>
                 {/each}
             </tbody>
@@ -72,5 +97,13 @@
         {#each availableProducts as product}
             <Card {...product} onclick={onclick(product)} />
         {/each}
+        <button
+            class="w-1/5 rounded-lg m-2 p-2 h-32 shadow-md text-white bg-secondary"
+            onclick={addCustomItem}
+        >
+            <h2 class="text-2xl font-bold">Sonstiges</h2>
+            <br>
+            <NumberInput label="" bind:value />
+        </button>
     </div>
 </div>

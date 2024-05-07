@@ -22,7 +22,7 @@
 
 <button
     style="color: {textColor}; background-color: {backgroundColor}"
-    class="w-1/4 rounded-lg m-2 p-2 h-32 shadow-md"
+    class="w-1/5 rounded-lg m-2 p-2 h-32 shadow-md"
     {onclick}
 >
     <h2 class="text-2xl font-bold">{name}</h2>
