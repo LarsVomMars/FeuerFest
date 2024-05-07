@@ -91,14 +91,14 @@
             component: EditColorCell,
             props: (row) => ({
                 update: makeOnChange("textColor", row),
-                defaultColor: "#000000",
+                defaultColor: "#ffffff",
             }),
         }),
         columnBuilder("backgroundColor", "Hintergrund", {
             component: EditColorCell,
             props: (row) => ({
                 update: makeOnChange("backgroundColor", row),
-                defaultColor: "#ffffff",
+                defaultColor: "#55acee",
             }),
         }),
         columnBuilder("action", "", {

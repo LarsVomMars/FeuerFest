@@ -62,8 +62,8 @@
                 <td>
                     <button
                         on:click={() => {
-                        add!(data);
-                        data = {};
+                            add!(data);
+                            data = {};
                         }}
                     >
                         Neu

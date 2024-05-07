@@ -10,7 +10,9 @@
 
     let { value, update, defaultColor, edit = false }: Props = $props();
 
-    if (!value && defaultColor) value = defaultColor;
+    $effect(() => {
+        if (!value && defaultColor) value = defaultColor;
+    });
 
     function toggleEditing() {
         if (edit) return;

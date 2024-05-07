@@ -9,6 +9,7 @@ import {
     primaryKey,
     unique,
     varchar,
+    decimal,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN", "OWNER"]);
@@ -86,7 +87,7 @@ export const productTable = pgTable(
         id: serial("id").primaryKey().notNull(),
         name: text("name").notNull(),
         description: text("description").notNull(),
-        price: integer("price").notNull(),
+        price: decimal("price", { precision: 10, scale: 2 }).$type<number>().notNull(),
         type: productTypeEnum("type").notNull(),
 
         backgroundColor: varchar("backgroundColor", { length: 7 }),
