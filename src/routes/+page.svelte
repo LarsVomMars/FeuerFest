@@ -8,7 +8,7 @@
     } from "$lib/components/form";
     import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
     import Heading from "$lib/components/Heading.svelte";
-    import MutliDropdown from "$lib/components/MutliDropdown.svelte";
+    import MutliDropdown from "$lib/components/MultiDropdown.svelte";
     import { columnBuilder, type Column } from "$lib/components/table";
     import Table, { EditTextCell } from "$lib/components/table";
     import ThemeToggle from "$lib/components/ThemeToggle.svelte";
