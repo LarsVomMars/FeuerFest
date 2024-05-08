@@ -66,10 +66,10 @@ export const eventTable = pgTable("Event", {
 export const eventStaffTable = pgTable(
     "EventStaff",
     {
-        event: text("event_slug")
+        event: text("event")
             .notNull()
             .references(() => eventTable.slug),
-        userId: integer("user_id")
+        userId: integer("userId")
             .notNull()
             .references(() => userTable.id),
         role: roleEnum("role").default("USER").notNull(),
@@ -100,7 +100,7 @@ export const productTable = pgTable(
         createdBy: integer("createdBy")
             .notNull()
             .references(() => userTable.id),
-        event: text("event_slug")
+        event: text("event")
             .notNull()
             .references(() => eventTable.slug),
     },
@@ -111,7 +111,7 @@ export const productTable = pgTable(
 
 export const orderTable = pgTable("Order", {
     id: serial("id").primaryKey().notNull(),
-    event: text("event_slug")
+    event: text("event")
         .notNull()
         .references(() => eventTable.slug),
 
@@ -123,16 +123,18 @@ export const orderTable = pgTable("Order", {
 
 export const orderItemTable = pgTable("OrderItem", {
     id: serial("id").primaryKey().notNull(),
-    event: text("event_slug")
+    event: text("event")
         .notNull()
         .references(() => eventTable.slug),
-    order: integer("order_id")
+    order: integer("orderId")
         .notNull()
         .references(() => orderTable.id),
-    product: integer("product_id").references(() => productTable.id),
+    product: integer("productId").references(() => productTable.id),
 
     quantity: integer("quantity").notNull(),
-    price: decimal("price", { precision: 10, scale: 2 }),
+    price: decimal("price", { precision: 10, scale: 2 })
+        .$type<number>()
+        .notNull(),
     total: decimal("total", { precision: 10, scale: 2 })
         .$type<number>()
         .notNull(),
