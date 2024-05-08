@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.7",
+    "@sveltejs/adapter-node": "^5.0.1",
     "@tanstack/svelte-query": "^5.32.1",
     "@trpc/client": "^10.45.2",
     "@trpc/server": "^10.45.2",
