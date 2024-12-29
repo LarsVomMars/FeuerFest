@@ -14,15 +14,4 @@ if (darkmode) {
 }
 
 const toggle = document.getElementById("theme-toggle");
-if (toggle) {
-    toggle.checked = value;
-    toggle.addEventListener("change", () => {
-        if (toggle.checked) {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("darkmode", "true");
-        } else {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("darkmode", "false");
-        }
-    });
-}
+if (toggle) toggle.checked = value;
