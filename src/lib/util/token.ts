@@ -3,9 +3,8 @@ import { TimeSpan } from "oslo";
 import { createJWT, validateJWT } from "oslo/jwt";
 import { randomBytes } from "crypto";
 
-const SIGNING_KEY = Buffer.from(
-    env.SIGNING_KEY || randomBytes(32).toString("hex"),
-    "hex",
+const SIGNING_KEY = new Uint8Array(
+    Buffer.from(env.SIGNING_KEY || randomBytes(32).toString("hex"), "hex"),
 );
 
 const EXPIRATION = new TimeSpan(7, "d");

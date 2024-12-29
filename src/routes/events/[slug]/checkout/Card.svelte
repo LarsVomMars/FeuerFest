@@ -10,7 +10,7 @@
     };
 
     let {
-        id,
+        id: _id,
         name,
         description,
         price,

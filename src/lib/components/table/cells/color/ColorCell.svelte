@@ -9,7 +9,7 @@
     let span = $state<HTMLSpanElement>();
 
     $effect(() => {
-        span && (span.style.backgroundColor = value);
+        if (span) span.style.backgroundColor = value;
     });
 </script>
 
