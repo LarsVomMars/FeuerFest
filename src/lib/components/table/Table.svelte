@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, any>">
     import { getEditableCell } from "$lib/util/components";
     import type { Column } from ".";
 
@@ -12,8 +12,6 @@
 
     let page = $state(0);
     let size = $state(20);
-
-    export type T = $$Generic<Record<string, any>>;
 
     let { rows, columns, add }: Props<T> = $props();
 
@@ -35,9 +33,9 @@
         {#each currentRows as row}
             <tr>
                 {#each columns as { key, cell }}
+                    {@const Component = cell.component}
                     <td class="p-2">
-                        <svelte:component
-                            this={cell.component}
+                        <Component
                             value={row[key]}
                             {...cell.props?.(row) ?? []}
                         />
@@ -50,18 +48,19 @@
         <tfoot>
             <tr>
                 {#each columns.filter((c) => c.label !== "") as { key, cell }}
+                    {@const Component = getEditableCell(cell.component)}
                     <td class="p-2">
-                        <svelte:component
-                            this={getEditableCell(cell.component)}
-                            bind:value={data[key]}
+                        <Component
                             {...cell.props?.() ?? []}
+                            value={data[key]}
+                            update={(value) => (data[key] = value)}
                             edit={true}
                         />
                     </td>
                 {/each}
                 <td>
                     <button
-                        on:click={() => {
+                        onclick={() => {
                             add!(data);
                             data = {};
                         }}

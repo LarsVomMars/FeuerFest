@@ -10,9 +10,8 @@
     let { value, update, edit = false }: Props = $props();
 
     function toggleEditing() {
-        if (edit) return;
-        isEditing = !isEditing;
-        if (!isEditing && update) {
+        if (!edit) isEditing = !isEditing;
+        if ((!isEditing && update) || (edit && update)) {
             update(value);
         } else if (isEditing) {
             setTimeout(() => input?.focus(), 0);

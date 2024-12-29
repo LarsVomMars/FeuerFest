@@ -1,27 +1,27 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
     export type Option<T = string> = {
         value: T;
         name: string;
     };
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="T = string">
     type Props<T> = {
         options: Option<T>[];
         selected: Option<T>[];
         start?: Option<T>[];
     };
 
-    export type T = $$Generic;
-
-    let { options, selected, start }: Props<T> = $props();
+    let { options, selected = $bindable(), start }: Props<T> = $props();
 
     let open = $state(false);
     // TODO: Debug, this doesnt work when bound
     // let availableOptions = $derived(
     //     options.filter((o) => !selected.includes(o)),
     // );
-    let availableOptions = $state(options.filter((o) => !(start ?? []).includes(o)));
+    let availableOptions = $state(
+        options.filter((o) => !(start ?? []).includes(o)),
+    );
     selected = start ?? [];
 
     const selectOption = (option: Option<T>) => {
@@ -43,10 +43,7 @@
     };
 </script>
 
-<svelte:window
-    onclick={handleClick}
-    ontouchstart={handleClick}
-/>
+<svelte:window onclick={handleClick} ontouchstart={handleClick} />
 
 <div
     class="w-full relative items-center flex cursor-text box-border border-2 border-primary rounded-md"
@@ -76,7 +73,7 @@
     </ul>
     {#if open}
         <ul
-            class="top-[100%] left-0 w-full absolute overflow-auto box-border p-2 my-1 bg-slate-700"
+            class="top-[100%] left-0 w-full absolute overflow-auto box-border p-2 my-1 bg-slate-300"
         >
             {#each availableOptions as option}
                 <li

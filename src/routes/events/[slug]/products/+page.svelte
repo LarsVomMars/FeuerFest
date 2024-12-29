@@ -36,7 +36,7 @@
 
     const options = [
         {
-            label: "Drinken",
+            label: "Trinken",
             value: "DRINK",
         },
         {
@@ -61,58 +61,42 @@
             : undefined;
 
     const columns: Column<Row>[] = [
-        columnBuilder("name", "Name", {
-            component: EditTextCell,
-            props: (row) => ({
-                update: makeOnChange("name", row),
-            }),
-        }),
-        columnBuilder("description", "Beschreibung", {
-            component: EditTextCell,
-            props: (row) => ({
-                update: makeOnChange("description", row),
-            }),
-        }),
-        columnBuilder("price", "Preis", {
-            component: EditNumberCell,
-            props: (row) => ({
-                update: makeOnChange("price", row),
-                adornment: "€",
-            }),
-        }),
-        columnBuilder("type", "Art", {
-            component: EditSelectCell,
-            props: (row) => ({
-                options,
-                update: makeOnChange("type", row),
-            }),
-        }),
-        columnBuilder("textColor", "Text", {
-            component: EditColorCell,
-            props: (row) => ({
-                update: makeOnChange("textColor", row),
-                defaultColor: "#ffffff",
-            }),
-        }),
-        columnBuilder("backgroundColor", "Hintergrund", {
-            component: EditColorCell,
-            props: (row) => ({
+        columnBuilder("name", "Name", EditTextCell, (row) => ({
+            update: makeOnChange("name", row),
+        })),
+        columnBuilder("description", "Beschreibung", EditTextCell, (row) => ({
+            update: makeOnChange("description", row),
+        })),
+        columnBuilder("price", "Preis", EditNumberCell, (row) => ({
+            update: makeOnChange("price", row),
+            adornment: "€",
+        })),
+        columnBuilder("type", "Art", EditSelectCell, (row) => ({
+            options,
+            update: makeOnChange("type", row),
+        })),
+        columnBuilder("textColor", "Text", EditColorCell, (row) => ({
+            update: makeOnChange("textColor", row),
+            defaultColor: "#ffffff",
+        })),
+        columnBuilder(
+            "backgroundColor",
+            "Hintergrund",
+            EditColorCell,
+            (row) => ({
                 update: makeOnChange("backgroundColor", row),
                 defaultColor: "#55acee",
             }),
-        }),
-        columnBuilder("action", "", {
-            component: DeleteAction,
-            props: (row) => ({
-                ondelete: () =>
-                    row
-                        ? $deleteRequest.mutate({
-                              slug,
-                              id: row.id,
-                          })
-                        : undefined,
-            }),
-        }),
+        ),
+        columnBuilder("action", "", DeleteAction, (row) => ({
+            ondelete: () =>
+                row
+                    ? $deleteRequest.mutate({
+                          slug,
+                          id: row.id,
+                      })
+                    : undefined,
+        })),
     ];
 
     const add = (data: Record<string, any>) => {
@@ -129,4 +113,4 @@
 </script>
 
 <Heading title={event?.name + " - Produkte"} />
-<Table {rows} {columns} {add} />
+<Table {rows} {columns} {add}></Table>

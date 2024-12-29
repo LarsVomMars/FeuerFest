@@ -17,7 +17,7 @@
         onError: console.error,
     });
 
-    const submit = (e: Event) => {
+    const submit = () => {
         $setupRequest.mutate({
             email,
             name,

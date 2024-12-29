@@ -2,7 +2,7 @@
     import type { DefaultProps } from ".";
 
     let {
-        value,
+        value = $bindable(),
         label,
         required = false,
         disabled = false,

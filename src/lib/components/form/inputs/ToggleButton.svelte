@@ -5,7 +5,7 @@
         disabled?: boolean;
     };
 
-    let { label, checked, disabled = false }: Props = $props();
+    let { label, checked = $bindable(), disabled = false }: Props = $props();
 
     let id = label.toLowerCase().replace(" ", "-");
 </script>

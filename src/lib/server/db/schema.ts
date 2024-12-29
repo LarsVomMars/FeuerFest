@@ -74,9 +74,7 @@ export const eventStaffTable = pgTable(
             .references(() => userTable.id),
         role: roleEnum("role").default("USER").notNull(),
     },
-    (table) => ({
-        pk: primaryKey({ columns: [table.event, table.userId] }),
-    }),
+    (table) => [primaryKey({ columns: [table.event, table.userId] })],
 );
 
 // export const productTypeTable = pgTable(); // TODO: make this a table instead of an enum
@@ -92,8 +90,8 @@ export const productTable = pgTable(
             .notNull(),
         type: productTypeEnum("type").notNull(),
 
-        backgroundColor: varchar("backgroundColor", { length: 7 }),
-        textColor: varchar("textColor", { length: 7 }),
+        backgroundColor: varchar("backgroundColor", { length: 7 }).notNull(),
+        textColor: varchar("textColor", { length: 7 }).notNull(),
 
         createdAt: timestamp("createdAt").defaultNow().notNull(),
         updatedAt: timestamp("updatedAt"),
@@ -104,9 +102,7 @@ export const productTable = pgTable(
             .notNull()
             .references(() => eventTable.slug),
     },
-    (table) => ({
-        unq: unique("product_name").on(table.name, table.description),
-    }),
+    (table) => [unique("product_name").on(table.name, table.description)],
 );
 
 export const orderTable = pgTable("Order", {

@@ -22,8 +22,8 @@
 
     let event = $eventRequest.data?.Event;
 
-    let options = [
-        { value: "DRINK", name: "Drinken" },
+    const options = [
+        { value: "DRINK", name: "Trinken" },
         { value: "FOOD", name: "Essen" },
         { value: "BAR", name: "Bar" },
     ];

@@ -12,9 +12,8 @@
     let { value, options, update, edit = false }: Props = $props();
 
     function toggleEditing() {
-        if (edit) return;
-        isEditing = !isEditing;
-        if (!isEditing && update) {
+        if (edit) isEditing = !isEditing;
+        if ((!isEditing || edit) && update) {
             update(value);
         }
     }

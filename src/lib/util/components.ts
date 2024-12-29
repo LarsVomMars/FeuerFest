@@ -4,9 +4,9 @@ import {
     EditSelectCell,
     EditTextCell,
 } from "$lib/components/table";
-import type { ComponentType } from "svelte";
+import type { Component } from "svelte";
 
-export const getEditableCell = (component: ComponentType): ComponentType => {
+export const getEditableCell = (component: Component) => {
     if (component.name.startsWith("Edit")) return component;
     switch (component.name) {
         case "TextCell":

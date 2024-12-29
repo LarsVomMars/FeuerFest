@@ -14,10 +14,10 @@
 </script>
 
 <span
-    class="w-full h-[1rem] block {cursor}"
+    class="w-full h-[1rem] block {cursor} border border-dark dark:border-white"
     {onclick}
     role="button"
     tabindex="0"
     onkeypress={(e) => e.key === "Enter" && onclick?.()}
     bind:this={span}
-/>
+></span>
