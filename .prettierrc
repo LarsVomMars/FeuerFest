@@ -3,11 +3,10 @@
 	"singleQuote": false,
 	"tabWidth": 4,
 	"useTabs": false,
+	"trailingComma": "all",
 	"plugins": [
-		"prettier-plugin-svelte"
-	],
-	"pluginSearchDirs": [
-		"."
+		"prettier-plugin-svelte",
+		"prettier-plugin-tailwindcss"
 	],
 	"overrides": [
 		{
