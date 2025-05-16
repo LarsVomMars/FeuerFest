@@ -14,7 +14,7 @@
 </script>
 
 <header
-    class="bg-primary text-white p-2 fixed flex justify-between w-full items-center"
+    class="bg-primary fixed flex w-full items-center justify-between p-2 text-white"
 >
     <Heading title="FeuerFest" />
     <div class="flex w-1/6 justify-end space-x-4">

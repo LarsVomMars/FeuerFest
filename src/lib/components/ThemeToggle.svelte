@@ -15,7 +15,7 @@
     <input
         type="checkbox"
         id="theme-toggle"
-        class="appearance-none p-6 bg-dark dark:bg-white rounded-full cursor-pointer"
+        class="bg-dark cursor-pointer appearance-none rounded-full p-6 dark:bg-white"
         onchange={toggleTheme}
         bind:this={input}
     />

@@ -15,10 +15,10 @@
         <button onclick={() => page--}>Previous</button>
     {/if}
 
-    {#each Array.from({ length: pages }).map((_, i) => i) as $i}
-        {#if $i <= page + 3 && $i >= page - 3}
-            <button class:font-bold={$i === page} onclick={() => (page = $i)}>
-                {$i + 1}
+    {#each Array.from({ length: pages }).map((_, i) => i) as i (i)}
+        {#if i <= page + 3 && i >= page - 3}
+            <button class:font-bold={i === page} onclick={() => (page = i)}>
+                {i + 1}
             </button>
         {/if}
     {/each}

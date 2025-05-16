@@ -14,7 +14,7 @@
 <div class="w-full">
     <label
         for={id}
-        class="absolute -translate-y-4 translate-x-5 select-none px-1 bg-white dark:bg-dark dark:text-white"
+        class="dark:bg-dark absolute translate-x-5 -translate-y-4 bg-white px-1 select-none dark:text-white"
     >
         {label}
         {#if required}
@@ -24,7 +24,7 @@
     <input
         type="number"
         {id}
-        class="w-full rounded-lg border-2 border-primary bg-transparent p-2 focus:outline-none"
+        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
         bind:value
         {disabled}
         {required}

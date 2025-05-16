@@ -46,15 +46,15 @@
 <svelte:window onclick={handleClick} ontouchstart={handleClick} />
 
 <div
-    class="w-full relative items-center flex cursor-text box-border border-2 border-primary rounded-md"
+    class="border-primary relative box-border flex w-full cursor-text items-center rounded-md border-2"
     bind:this={div}
 >
-    <ul class="flex flex-row rounded-md p-0 m-0">
-        {#each selected as option}
+    <ul class="m-0 flex flex-row rounded-md p-0">
+        {#each selected as option (option.value)}
             <li
                 role="option"
                 aria-selected="true"
-                class="items-center rounded-md flex m-1 leading-normal whitespace-nowrap p-1 cursor-pointer"
+                class="m-1 flex cursor-pointer items-center rounded-md p-1 leading-normal whitespace-nowrap"
                 onclick={() => removeOption(option)}
                 onkeypress={(e) => {
                     if (e.key === "Enter") {
@@ -68,17 +68,17 @@
         <input
             type="text"
             onfocus={() => (open = !!availableOptions.length)}
-            class="border-none outline-none bg-transparent flex-1 rounded-none w-fit"
+            class="w-fit flex-1 rounded-none border-none bg-transparent outline-none"
         />
     </ul>
     {#if open}
         <ul
-            class="top-[100%] left-0 w-full absolute overflow-auto box-border p-2 my-1 bg-white dark:bg-dark rounded-md shadow-lg border-2 border-primary"
+            class="dark:bg-dark border-primary absolute top-[100%] left-0 my-1 box-border w-full overflow-auto rounded-md border-2 bg-white p-2 shadow-lg"
         >
-            {#each availableOptions as option}
+            {#each availableOptions as option (option.value)}
                 <li
                     onclick={() => selectOption(option)}
-                    class="p-2 cursor-pointer"
+                    class="cursor-pointer p-2"
                     role="option"
                     aria-selected="false"
                     onkeypress={(e) => {

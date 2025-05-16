@@ -118,7 +118,7 @@
         <MultiDropdown bind:selected {options} start={options} />
         <table class="w-full">
             <tbody>
-                {#each items as item}
+                {#each items as item (item.id)}
                     <tr>
                         <td>{item.count.toString()}x</td>
                         <td>{item.name}</td>
@@ -146,7 +146,7 @@
         {/if}
     </div>
     <div class="flex h-full w-4/5 flex-wrap items-center justify-center p-2">
-        {#each availableProducts as product}
+        {#each availableProducts as product (product.id)}
             <Card {...product} onclick={onclick(product)} />
         {/each}
         <button

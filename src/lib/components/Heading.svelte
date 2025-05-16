@@ -6,6 +6,6 @@
     let { title }: Props = $props();
 </script>
 
-<h1 class="text-4xl font-bold underline decoration-primary">
+<h1 class="decoration-primary text-4xl font-bold underline">
     {title}
 </h1>

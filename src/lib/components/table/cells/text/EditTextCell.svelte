@@ -25,7 +25,7 @@
 {#if isEditing}
     <input
         type="text"
-        class="bg-transparent border-2 border-primary-200 outline-none w-full"
+        class="border-primary-200 w-full border-2 bg-transparent outline-none"
         bind:value
         onblur={toggleEditing}
         onkeydown={(event) => event.key === "Enter" && toggleEditing()}

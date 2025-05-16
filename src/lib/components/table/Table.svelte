@@ -21,10 +21,10 @@
     );
 </script>
 
-<table class="table-auto w-full">
+<table class="w-full table-auto">
     <thead>
         <tr>
-            {#each columns as { label }}
+            {#each columns as { label, key } (key)}
                 <th>{label}</th>
             {/each}
         </tr>
@@ -32,7 +32,7 @@
     <tbody>
         {#each currentRows as row}
             <tr>
-                {#each columns as { key, cell }}
+                {#each columns as { key, cell } (key)}
                     {@const Component = cell.component}
                     <td class="p-2">
                         <Component
@@ -47,7 +47,7 @@
     {#if add}
         <tfoot>
             <tr>
-                {#each columns.filter((c) => c.label !== "") as { key, cell }}
+                {#each columns.filter((c) => c.label !== "") as { key, cell } (key)}
                     {@const Component = getEditableCell(cell.component)}
                     <td class="p-2">
                         <Component

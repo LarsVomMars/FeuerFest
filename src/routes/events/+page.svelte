@@ -14,7 +14,7 @@
 
 <h2>Aktuelle Events</h2>
 {#if $activeEvents.isSuccess}
-    {#each $activeEvents.data as row}
+    {#each $activeEvents.data as row (row.Event.slug)}
         {@const event = row.Event}
         <a href="/events/{event.slug}">{event.name}</a>
     {/each}
@@ -22,7 +22,7 @@
 
 <h2>Kommende Events</h2>
 {#if $upcomingEvents.isSuccess}
-    {#each $upcomingEvents.data as row}
+    {#each $upcomingEvents.data as row (row.Event.slug)}
         {@const event = row.Event}
         <a href="/events/{event.slug}">{event.name}</a>
     {/each}
@@ -30,7 +30,7 @@
 
 <h2>Vergangene Events</h2>
 {#if $pastEvents.isSuccess}
-    {#each $pastEvents.data as row}
+    {#each $pastEvents.data as row (row.Event.slug)}
         {@const event = row.Event}
         <a href="/events/{event.slug}">{event.name}</a>
     {/each}

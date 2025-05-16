@@ -14,7 +14,7 @@
 </script>
 
 <span
-    class="w-full h-[1rem] block {cursor} border border-dark dark:border-white"
+    class="block h-[1rem] w-full {cursor} border-dark border dark:border-white"
     {onclick}
     role="button"
     tabindex="0"

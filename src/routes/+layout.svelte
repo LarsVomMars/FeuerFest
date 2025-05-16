@@ -7,10 +7,9 @@
     trpc.hydrateFromServer(() => data.trpc);
 </script>
 
-
 <Header />
 <main
-    class="w-full h-[100vh] bg-white text-dark dark:bg-dark dark:text-white flex flex-col justify-center items-center gap-y-4"
+    class="text-dark dark:bg-dark flex h-[100vh] w-full flex-col items-center justify-center gap-y-4 bg-white dark:text-white"
 >
     {@render children?.()}
 </main>

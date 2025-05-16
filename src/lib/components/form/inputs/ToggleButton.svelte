@@ -10,13 +10,13 @@
     let id = label.toLowerCase().replace(" ", "-");
 </script>
 
-<div class="flex flex-row items-center justify-between w-full">
+<div class="flex w-full flex-row items-center justify-between">
     <label for={id} class="select-none">{label}</label>
     <input
         type="checkbox"
         {id}
         {disabled}
         bind:checked
-        class="appearance-none relative w-[3em] h-[1.6em] bg-primary rounded-[0.2em] cursor-pointer select-none before:content-[''] before:w-[1.2em] before:h-[1.2em] before:rounded-[0.2em] before:bg-white dark:before:bg-dark before:block before:absolute before:left-[0.2em] before:top-[0.2em] checked:bg-secondary checked:before:left-[1.6em] before:transition-all ease-in-out duration-300"
+        class="bg-primary dark:before:bg-dark checked:bg-secondary relative h-[1.6em] w-[3em] cursor-pointer appearance-none rounded-[0.2em] duration-300 ease-in-out select-none before:absolute before:top-[0.2em] before:left-[0.2em] before:block before:h-[1.2em] before:w-[1.2em] before:rounded-[0.2em] before:bg-white before:transition-all before:content-[''] checked:before:left-[1.6em]"
     />
 </div>
