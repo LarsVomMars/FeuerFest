@@ -7,7 +7,7 @@ export const trpc = createTRPCSvelte<AppRouter>({
     links: [
         httpBatchLink({
             url: "/api/trpc",
+            transformer,
         }),
     ],
-    transformer,
 });

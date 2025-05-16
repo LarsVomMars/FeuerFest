@@ -6,7 +6,7 @@
         label,
         required = false,
         disabled = false,
-    }: DefaultProps = $props();
+    } = $props();
 
     let id = label.replace(/\s/g, "_").toLowerCase();
 </script>

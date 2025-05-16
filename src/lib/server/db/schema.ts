@@ -85,7 +85,7 @@ export const productTable = pgTable(
         id: serial("id").primaryKey().notNull(),
         name: text("name").notNull(),
         description: text("description").notNull(),
-        price: decimal("price", { precision: 10, scale: 2 })
+        price: decimal("price", { precision: 10, scale: 2, mode: "number" })
             .$type<number>()
             .notNull(),
         type: productTypeEnum("type").notNull(),

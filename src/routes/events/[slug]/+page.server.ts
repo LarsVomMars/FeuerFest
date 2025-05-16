@@ -7,7 +7,7 @@ export const load: PageServerLoad = async (event) => {
     if (!event.params.slug) throw redirect(302, "/events");
 
     try {
-        await trpcServer.events.get.ssr({ ...event.params }, event);
+        await trpcServer.events.get.ssr({ ...event.params });
     } catch (e) {
         console.error(e);
         throw redirect(302, "/events");

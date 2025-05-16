@@ -9,6 +9,8 @@
     import Card from "./Card.svelte";
     import NumberInput from "$lib/components/form/inputs/NumberInput.svelte";
     import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
+    import Form from "$lib/components/form";
+    import SubmitButton from "$lib/components/form/inputs/SubmitButton.svelte";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
@@ -32,24 +34,32 @@
 
     let products = $productRequest.data ?? [];
     type Product = (typeof products)[number];
+    type ProductWithCount = Product & { count: number };
 
     let availableProducts = $derived(
         products.filter((p) => selected.some((s) => s.value === p.type)),
     );
 
-    const onclick = (product: Product) => () => {
-        order = [...order, product];
+    console.log(products);
+
+    const onclick = (product: Product) => (count: number) => {
+        order = [...order, ...Array(count).fill(product)];
     };
 
     let order = $state<Product[]>([]);
-    let uniqueOrder = $derived(new Set(order));
     let items = $derived(
-        [...uniqueOrder].map((item) => ({
-            ...item,
-            count: order.filter((i) => i === item).length,
-        })),
+        order.reduce((acc, item) => {
+            const existingItem = acc.find((i) => i.id === item.id);
+            if (existingItem) {
+                existingItem.count++;
+                if (existingItem.id === -1) existingItem.price += item.price;
+            } else {
+                acc.push({ ...item, count: 1 });
+            }
+            return acc;
+        }, [] as ProductWithCount[]),
     );
-    let total = $derived(order.reduce((acc, item) => +acc + +item.price, 0));
+    let total = $derived(order.reduce((acc, item) => acc + item.price, 0));
 
     let value = $state<number>();
     const addCustomItem = () => {
@@ -88,9 +98,9 @@
             voucher,
             order: items.map((i) => ({
                 id: i.id,
-                price: +i.price,
+                price: i.price,
                 quantity: i.count,
-                total: +i.price * i.count,
+                total: i.price * i.count,
             })),
         });
         closeDialog();
@@ -103,20 +113,16 @@
 </script>
 
 <Heading title={event?.name + " - Kasse"} />
-<div class="w-full flex">
-    <div class="w-1/5 p-2 space-y-2">
+<div class="flex w-full">
+    <div class="w-1/5 space-y-2 p-2">
         <MultiDropdown bind:selected {options} start={options} />
         <table class="w-full">
             <tbody>
                 {#each items as item}
                     <tr>
-                        <td>{item.count}x</td>
+                        <td>{item.count.toString()}x</td>
                         <td>{item.name}</td>
-                        <td class="text-right">
-                            {item.price.toFixed
-                                ? item.price.toFixed(2)
-                                : item.price}€
-                        </td>
+                        <td class="text-right">{item.price.toFixed(2)}€</td>
                     </tr>
                 {/each}
             </tbody>
@@ -132,51 +138,48 @@
         {#if items.length}
             <button
                 type="submit"
-                class="w-full rounded-lg bg-secondary p-2 hover:bg-secondary-200 disabled:bg-secondary-300 text-white"
+                class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full rounded-lg p-2 text-white"
                 onclick={orderDialog}
             >
                 Bestellen
             </button>
         {/if}
     </div>
-    <div class="w-4/5 p-2 flex h-full items-center flex-wrap justify-center">
+    <div class="flex h-full w-4/5 flex-wrap items-center justify-center p-2">
         {#each availableProducts as product}
             <Card {...product} onclick={onclick(product)} />
         {/each}
         <button
-            class="w-1/5 rounded-lg m-2 p-2 h-32 shadow-md text-white bg-secondary"
+            class="bg-secondary m-2 h-32 w-1/5 rounded-lg p-2 text-white shadow-md"
             onclick={addCustomItem}
         >
             <h2 class="text-2xl font-bold">Sonstiges</h2>
             <br />
-            <NumberInput label="" bind:value />
+            <form onsubmit={addCustomItem}>
+                <NumberInput label="" bind:value />
+            </form>
         </button>
     </div>
 </div>
 
 <dialog
     bind:this={dialog}
-    class="border dark:bg-dark dark:text-white w-1/2 h-1/2 flex flex-col justify-center [&:not([open])]:hidden gap-4 items-center"
+    class="dark:bg-dark fixed flex h-1/2 w-1/2 translate-1/2 flex-col items-center justify-center border dark:text-white [&:not([open])]:hidden"
 >
-    <span>Gesamt: {total.toFixed(2)}€</span>
     <div class="w-1/2">
-        <NumberInput label="Bekommen" bind:value={received} />
+        <Form submit={makeOrder}>
+            <span>Gesamt: {total.toFixed(2)}€</span>
+            <NumberInput label="Bekommen" bind:value={received} />
+            <span>Rückgeld: {change.toFixed(2)}€</span>
+            <ToggleButton bind:checked={voucher} label="Gutschein" />
+            <SubmitButton text="Bestellen" />
+            <button
+                class="bg-primary w-full rounded-md p-2 text-white"
+                type="button"
+                onclick={closeDialog}
+            >
+                Abrechen
+            </button>
+        </Form>
     </div>
-    <span>Rückgeld: {change.toFixed(2)}€</span>
-    <div class="w-1/2">
-        <ToggleButton bind:checked={voucher} label="Gutschein" />
-    </div>
-
-    <button
-        class="w-1/2 rounded-md p-2 text-white bg-secondary"
-        onclick={makeOrder}
-    >
-        Bestellen
-    </button>
-    <button
-        class="w-1/2 rounded-md p-2 text-white bg-primary"
-        onclick={closeDialog}
-    >
-        Abrechen
-    </button>
 </dialog>
