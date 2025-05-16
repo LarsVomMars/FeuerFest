@@ -1,18 +1,18 @@
 <script lang="ts">
-    // import type { DefaultProps } from ".";
+    import type { DefaultProps } from ".";
 
     let {
         value = $bindable(),
         label,
-        // required = false,
-        // disabled = false,
+        required = false,
+        disabled = false,
     } = $props();
 
-    // let id = label.replace(/\s/g, "_").toLowerCase();
+    let id = label.replace(/\s/g, "_").toLowerCase();
 </script>
 
 <div class="w-full">
-    <!-- <label
+    <label
         for={id}
         class="absolute -translate-y-4 translate-x-5 select-none px-1 bg-white dark:bg-dark dark:text-white"
     >
@@ -28,5 +28,5 @@
         bind:value
         {disabled}
         {required}
-    /> -->
+    />
 </div>

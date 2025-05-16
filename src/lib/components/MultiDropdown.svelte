@@ -73,7 +73,7 @@
     </ul>
     {#if open}
         <ul
-            class="top-[100%] left-0 w-full absolute overflow-auto box-border p-2 my-1 bg-slate-300"
+            class="top-[100%] left-0 w-full absolute overflow-auto box-border p-2 my-1 bg-white dark:bg-dark rounded-md shadow-lg border-2 border-primary"
         >
             {#each availableOptions as option}
                 <li
