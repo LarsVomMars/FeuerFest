@@ -29,7 +29,7 @@
 
 <button
     style="color: {textColor}; background-color: {backgroundColor}"
-    class="m-2 h-32 w-1/5 rounded-lg p-2 shadow-md"
+    class="m-2 h-32 w-1/5 cursor-pointer rounded-lg p-2 shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg"
     onclick={() => onclick?.(1)}
     use:longpress
     onlongpress={() => {

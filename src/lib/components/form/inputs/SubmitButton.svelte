@@ -7,7 +7,7 @@
 
 <button
     type="submit"
-    class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full cursor-pointer rounded-lg p-2 text-white"
+    class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full cursor-pointer rounded-lg p-2 text-white h-10"
 >
     {text}
 </button>

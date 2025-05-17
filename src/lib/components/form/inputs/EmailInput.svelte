@@ -24,7 +24,7 @@
     <input
         type="email"
         {id}
-        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
+        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none h-10"
         bind:value
         {disabled}
         {required}

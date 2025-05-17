@@ -24,7 +24,7 @@
     <input
         type="number"
         {id}
-        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
+        class="border-primary h-10 w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
         bind:value
         {disabled}
         {required}

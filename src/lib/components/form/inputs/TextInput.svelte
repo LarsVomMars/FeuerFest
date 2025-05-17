@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { HTMLInputAttributes } from "svelte/elements";
     import type { DefaultProps } from ".";
 
     let {
@@ -6,7 +7,8 @@
         label,
         required = false,
         disabled = false,
-    }: DefaultProps = $props();
+        ...props
+    }: DefaultProps & HTMLInputAttributes = $props();
 
     let id = label.replace(/\s/g, "_").toLowerCase();
 </script>
@@ -24,9 +26,10 @@
     <input
         type="text"
         {id}
-        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
+        class="border-primary h-10 w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none"
         bind:value
         {disabled}
         {required}
+        {...props}
     />
 </div>

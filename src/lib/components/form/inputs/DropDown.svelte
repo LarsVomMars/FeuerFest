@@ -1,12 +1,19 @@
+<script module>
+    type Props = DefaultProps & {
+        options: { label: string; value: string }[];
+    };
+</script>
+
 <script lang="ts">
     import type { DefaultProps } from ".";
 
     let {
         value = $bindable(),
         label,
+        options,
         required = false,
         disabled = false,
-    }: DefaultProps = $props();
+    }: Props = $props();
 
     let id = label.replace(/\s/g, "_").toLowerCase();
 </script>
@@ -21,12 +28,15 @@
             <span class="text-primary-200">*</span>
         {/if}
     </label>
-    <input
-        type="datetime-local"
+    <select
         {id}
-        class="border-primary w-full rounded-lg border-2 bg-transparent p-2 focus:outline-none h-10"
+        class="border-primary w-full rounded-lg border-2 bg-white dark:bg-dark p-2 focus:outline-none h-10"
         bind:value
         {disabled}
         {required}
-    />
+    >
+        {#each options as option}
+            <option value={option.value} >{option.label}</option>
+        {/each}
+    </select>
 </div>

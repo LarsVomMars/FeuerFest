@@ -18,6 +18,7 @@
     const orderRequest = trpc.events.checkout.checkout.mutation({
         onSuccess: () => {
             order = [];
+            $productRequest.refetch();
         },
         onError: console.error,
     });
@@ -30,17 +31,15 @@
         { value: "BAR", name: "Bar" },
     ];
 
-    let selected = $state<Option[]>([]);
+    let selected = $state<string[]>(options.map((o) => o.value));
 
     let products = $productRequest.data ?? [];
     type Product = (typeof products)[number];
     type ProductWithCount = Product & { count: number };
 
     let availableProducts = $derived(
-        products.filter((p) => selected.some((s) => s.value === p.type)),
+        products.filter((p) => selected.some((s) => s === p.type)),
     );
-
-    console.log(products);
 
     const onclick = (product: Product) => (count: number) => {
         order = [...order, ...Array(count).fill(product)];
@@ -62,7 +61,8 @@
     let total = $derived(order.reduce((acc, item) => acc + item.price, 0));
 
     let value = $state<number>();
-    const addCustomItem = () => {
+    const addCustomItem = (event?: Event) => {
+        event?.preventDefault();
         if (value === undefined) return;
         order = [
             ...order,
@@ -112,10 +112,27 @@
     };
 </script>
 
+<div
+    class="border-primary fixed top-27 left-10 flex items-center justify-center border-2 p-2"
+>
+    <ul>
+        {#each options as option (option.value)}
+            <li class="select-none">
+                <input
+                    type="checkbox"
+                    id="cb-{option.value}"
+                    bind:group={selected}
+                    value={option.value}
+                />
+                <label for="cb-{option.value}">{option.name}</label>
+            </li>
+        {/each}
+    </ul>
+</div>
+
 <Heading title={event?.name + " - Kasse"} />
 <div class="flex w-full">
     <div class="w-1/5 space-y-2 p-2">
-        <MultiDropdown bind:selected {options} start={options} />
         <table class="w-full">
             <tbody>
                 {#each items as item (item.id)}
@@ -126,32 +143,30 @@
                     </tr>
                 {/each}
             </tbody>
-            {#if items.length}
-                <tfoot>
-                    <tr class="border-t">
-                        <td colspan={2}>Gesamt</td>
-                        <td class="text-right">{total.toFixed(2)}€</td>
-                    </tr>
-                </tfoot>
-            {/if}
+            <tfoot>
+                <tr class="border-t">
+                    <td colspan={2}>Gesamt</td>
+                    <td class="text-right">{total.toFixed(2)}€</td>
+                </tr>
+            </tfoot>
         </table>
-        {#if items.length}
-            <button
-                type="submit"
-                class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full rounded-lg p-2 text-white"
-                onclick={orderDialog}
-            >
-                Bestellen
-            </button>
-        {/if}
+        <button
+            type="submit"
+            class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full rounded-lg p-2 text-white"
+            onclick={orderDialog}
+            disabled={items.length === 0}
+        >
+            Bestellen
+        </button>
     </div>
     <div class="flex h-full w-4/5 flex-wrap items-center justify-center p-2">
         {#each availableProducts as product (product.id)}
             <Card {...product} onclick={onclick(product)} />
         {/each}
         <button
-            class="bg-secondary m-2 h-32 w-1/5 rounded-lg p-2 text-white shadow-md"
+            class="bg-secondary m-2 h-32 w-1/5 rounded-lg p-2 text-white shadow-md transition-all duration-200 enabled:hover:scale-105 enabled:hover:shadow-lg"
             onclick={addCustomItem}
+            disabled={!value}
         >
             <h2 class="text-2xl font-bold">Sonstiges</h2>
             <br />
