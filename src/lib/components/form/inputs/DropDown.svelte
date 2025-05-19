@@ -1,6 +1,6 @@
 <script module>
     type Props = DefaultProps & {
-        options: { label: string; value: string }[];
+        options: { label: string; value: string; disabled?: boolean }[];
     };
 </script>
 
@@ -30,13 +30,15 @@
     </label>
     <select
         {id}
-        class="border-primary w-full rounded-lg border-2 bg-white dark:bg-dark p-2 focus:outline-none h-10"
+        class="border-primary dark:bg-dark h-10 w-full rounded-lg border-2 bg-white p-2 focus:outline-none"
         bind:value
         {disabled}
         {required}
     >
         {#each options as option}
-            <option value={option.value} >{option.label}</option>
+            <option value={option.value} disabled={option.disabled}>
+                {option.label}
+            </option>
         {/each}
     </select>
 </div>

@@ -10,7 +10,7 @@
     let pages = $derived(Math.ceil(total / size));
 </script>
 
-<div class="flex justify-center space-x-2">
+<div class="flex justify-center space-x-2 [&_button]:cursor-pointer">
     {#if page > 0}
         <button onclick={() => page--}>Previous</button>
     {/if}

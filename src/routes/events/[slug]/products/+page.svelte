@@ -1,25 +1,18 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import Heading from "$lib/components/Heading.svelte";
-    import { trpc } from "$lib/trpc";
+    import { trpc, type RouterInputs, type RouterOutputs } from "$lib/trpc";
     import Table, {
-        EditTextCell,
-        EditSelectCell,
-        EditNumberCell,
+        ColorCell,
         DeleteAction,
-        columnBuilder,
+        DropDownCell,
+        TextCell,
         type Column,
     } from "$lib/components/table";
-    import EditColorCell from "$lib/components/table/cells/color/EditColorCell.svelte";
-    import {
-        ColorInput,
-        DropDown,
-        NumberInput,
-        TextInput,
-    } from "$lib/components/form";
 
-    import { mask } from "$lib/actions/mask";
-    import Test from "./Test.svelte";
+    import { euroMask } from "$lib/actions/mask";
+    import NewProduct from "./NewProduct.svelte";
+    import { SvelteMap } from "svelte/reactivity";
 
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
@@ -35,14 +28,6 @@
     });
 
     let event = $eventRequest.data?.Event;
-
-    // Prob wait for library update to use runes
-    $: rows = $productRequest.data ?? [];
-
-    type Row = (typeof rows)[number];
-
-    // let rows: Row[] = $derived([...products]);
-
     const options = [
         {
             label: "Trinken",
@@ -58,87 +43,101 @@
         },
     ];
 
-    const makeOnChange = <T,>(name: string, row?: Row) =>
-        row
-            ? (value: T) => {
-                  $updateRequest.mutate({
-                      slug,
-                      id: row.id,
-                      [name]: value,
-                  });
-              }
-            : undefined;
-
-    const add = (data: Record<string, any>) => {
+    const add = (
+        data: Omit<RouterInputs["events"]["products"]["create"], "slug">,
+    ) => {
         $createRequest.mutate({
             slug,
-            name: data.name,
-            description: data.description,
-            price: +data.price,
-            type: data.type,
-            backgroundColor: data.backgroundColor,
-            textColor: data.textColor,
+            ...data,
         });
     };
 
-    const formatter = Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "EUR",
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-    });
+    const columns: Column[] = [
+        { label: "Name", key: "name" },
+        { label: "Beschreibung", key: "description" },
+        { label: "Preis", key: "price" },
+        { label: "Art", key: "type" },
+        { label: "Textfarbe", key: "textColor" },
+        { label: "Hintergrundfarbe", key: "backgroundColor" },
+        { label: "", key: "actions" },
+    ];
+
+    type Row = RouterOutputs["events"]["products"]["list"][number];
+
+    const update = (
+        id: number,
+        data: Partial<RouterInputs["events"]["products"]["update"]>,
+    ) => {
+        $updateRequest.mutate({
+            id,
+            slug,
+            ...data,
+        });
+    };
+
+    const ondelete = (id: number) => $deleteRequest.mutate({ id, slug });
 </script>
 
+{#snippet render(row: Row)}
+    <td>
+        <TextCell
+            value={row.name}
+            onchange={(e) => update(row.id, { name: e.currentTarget.value })}
+        />
+    </td>
+    <td>
+        <TextCell
+            value={row.description}
+            onchange={(e) =>
+                update(row.id, { description: e.currentTarget.value })}
+        />
+    </td>
+    <td>
+        <TextCell
+            value={row.price.toFixed(2) + "€"}
+            {@attach euroMask}
+            onchange={(e) =>
+                update(row.id, { price: parseFloat(e.currentTarget.value) })}
+        />
+    </td>
+    <td>
+        <DropDownCell
+            value={row.type}
+            {options}
+            onchange={(e) =>
+                update(row.id, {
+                    type: e.currentTarget.value as "DRINK" | "FOOD" | "BAR",
+                })}
+        />
+    </td>
+    <td>
+        <ColorCell
+            value={row.textColor}
+            onchange={(e) =>
+                update(row.id, { textColor: e.currentTarget.value })}
+        />
+    </td>
+    <td>
+        <ColorCell
+            value={row.backgroundColor}
+            onchange={(e) =>
+                update(row.id, { backgroundColor: e.currentTarget.value })}
+        />
+    </td>
+    <td>
+        <DeleteAction ondelete={() => ondelete(row.id)} />
+    </td>
+{/snippet}
+
 <Heading title={event?.name + " - Produkte"} />
-<!-- <Table {rows} {columns} {add}></Table> -->
-<table class="[&_td]:p-2 [&_th]:p-2">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Preis</th>
-            <th>Art</th>
-            <th>Textfarbe</th>
-            <th>Hintergrundfarbe</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody class="border-primary border-y">
-        {#each rows as row (row.id)}
-            <tr>
-                <td>
-                    <TextInput label="" value={row.name} />
-                </td>
-                <td>
-                    <TextInput label="" value={row.description} />
-                </td>
-                <td>
-                    <TextInput
-                        label=""
-                        value={formatter.format(row.price).replace(",", ".")}
-                        oninput={e => console.log((e.currentTarget as HTMLInputElement).value)}
-                        {@attach mask}
-                    />
-                </td>
-                <td>
-                    <DropDown label="" value={row.type} {options} />
-                </td>
-                <td>
-                    <ColorInput label="" value={row.textColor} />
-                </td>
-                <td>
-                    <ColorInput label="" value={row.backgroundColor} />
-                </td>
-                <td>
-                    <DeleteAction
-                        ondelete={() =>
-                            $deleteRequest.mutate({
-                                slug,
-                                id: row.id,
-                            })}
-                    />
-                </td>
-            </tr>
-        {/each}
-    </tbody>
-</table>
+
+{#if $productRequest.isSuccess}
+    <Table
+        rows={$productRequest.data}
+        {columns}
+        {render}
+        class="[&_tbody]:border-primary [&_tbody]:border-y [&_td]:p-2 [&_th]:p-2"
+    />
+{/if}
+
+<NewProduct {add} />

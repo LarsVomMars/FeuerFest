@@ -1,5 +1,4 @@
-export * from "./text";
-export * from "./number";
-export * from "./select";
 export * from "./action";
-export * from "./color";
+export { default as TextCell } from "./TextCell.svelte";
+export { default as DropDownCell } from "./DropDownCell.svelte";
+export { default as ColorCell } from "./ColorCell.svelte";
