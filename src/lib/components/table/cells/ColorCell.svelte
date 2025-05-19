@@ -5,6 +5,7 @@
         value = $bindable(),
         required = false,
         disabled = false,
+        ...props
     }: HTMLInputAttributes = $props();
 </script>
 
@@ -14,4 +15,5 @@
     bind:value
     {disabled}
     {required}
+    {...props}
 />

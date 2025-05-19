@@ -41,6 +41,7 @@ export default router({
                 type: z.enum(productTypeEnum.enumValues),
                 backgroundColor: z.string().default("#55acee"),
                 textColor: z.string().default("#ffffff"),
+                enabled: z.boolean().default(true),
             }),
         )
         .mutation(async ({ ctx, input }) => {
@@ -74,8 +75,9 @@ export default router({
                 description: z.string().optional(),
                 price: z.number().optional(),
                 type: z.enum(productTypeEnum.enumValues).optional(),
-                backgroundColor: z.string().optional().default("#55acee"),
-                textColor: z.string().optional().default("#ffffff"),
+                backgroundColor: z.string().optional(),
+                textColor: z.string().optional(),
+                enabled: z.boolean().optional(),
             }),
         )
         .mutation(async ({ ctx, input }) => {

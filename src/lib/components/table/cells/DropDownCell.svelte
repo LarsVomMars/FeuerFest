@@ -1,12 +1,13 @@
 <script lang="ts">
-    import type { HTMLInputAttributes } from "svelte/elements";
+    import type { HTMLSelectAttributes } from "svelte/elements";
 
     let {
         value = $bindable(),
         options,
         required = false,
         disabled = false,
-    }: HTMLInputAttributes & {
+        ...props
+    }: HTMLSelectAttributes & {
         options: { label: string; value: string }[];
     } = $props();
 </script>
@@ -16,6 +17,7 @@
     bind:value
     {disabled}
     {required}
+    {...props}
 >
     {#each options as option}
         <option value={option.value}>{option.label}</option>

@@ -93,6 +93,8 @@ export const productTable = pgTable(
         backgroundColor: varchar("backgroundColor", { length: 7 }).notNull(),
         textColor: varchar("textColor", { length: 7 }).notNull(),
 
+        enabled: boolean("enabled").default(true).notNull(),
+
         createdAt: timestamp("createdAt").defaultNow().notNull(),
         updatedAt: timestamp("updatedAt"),
         createdBy: integer("createdBy")

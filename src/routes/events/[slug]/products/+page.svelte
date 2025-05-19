@@ -7,6 +7,7 @@
         DeleteAction,
         DropDownCell,
         TextCell,
+        ToggleCell,
         type Column,
     } from "$lib/components/table";
 
@@ -17,15 +18,11 @@
     let slug = $page.params.slug!;
     const eventRequest = trpc.events.get.query({ slug });
     const productRequest = trpc.events.products.list.query({ slug });
-    const createRequest = trpc.events.products.create.mutation({
-        onSuccess: () => $productRequest.refetch(),
-    });
-    const updateRequest = trpc.events.products.update.mutation({
-        onSuccess: () => $productRequest.refetch(),
-    });
-    const deleteRequest = trpc.events.products.delete.mutation({
-        onSuccess: () => $productRequest.refetch(),
-    });
+
+    const invalidate = { onSuccess: () => $productRequest.refetch() };
+    const createRequest = trpc.events.products.create.mutation(invalidate);
+    const updateRequest = trpc.events.products.update.mutation(invalidate);
+    const deleteRequest = trpc.events.products.delete.mutation(invalidate);
 
     let event = $eventRequest.data?.Event;
     const options = [
@@ -59,6 +56,7 @@
         { label: "Art", key: "type" },
         { label: "Textfarbe", key: "textColor" },
         { label: "Hintergrundfarbe", key: "backgroundColor" },
+        { label: "Aktiv", key: "enabled" },
         { label: "", key: "actions" },
     ];
 
@@ -122,6 +120,13 @@
             value={row.backgroundColor}
             onchange={(e) =>
                 update(row.id, { backgroundColor: e.currentTarget.value })}
+        />
+    </td>
+    <td>
+        <ToggleCell
+            checked={row.enabled}
+            onchange={(e) =>
+                update(row.id, { enabled: e.currentTarget.checked })}
         />
     </td>
     <td>

@@ -3,9 +3,6 @@
     import Heading from "$lib/components/Heading.svelte";
     import { trpc } from "$lib/trpc";
 
-    import MultiDropdown, {
-        type Option,
-    } from "$lib/components/MultiDropdown.svelte";
     import Card from "./Card.svelte";
     import NumberInput from "$lib/components/form/inputs/NumberInput.svelte";
     import ToggleButton from "$lib/components/form/inputs/ToggleButton.svelte";
@@ -38,7 +35,7 @@
     type ProductWithCount = Product & { count: number };
 
     let availableProducts = $derived(
-        products.filter((p) => selected.some((s) => s === p.type)),
+        products.filter((p) => selected.some((s) => s === p.type && p.enabled)),
     );
 
     const onclick = (product: Product) => (count: number) => {
@@ -77,7 +74,8 @@
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 createdBy: 0,
-                event: "",
+                event: slug,
+                enabled: true,
             },
         ];
         value = undefined;
