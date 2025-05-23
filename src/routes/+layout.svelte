@@ -7,7 +7,7 @@
     trpc.hydrateFromServer(() => data.trpc);
 </script>
 
-<Header />
+<!-- <Header /> -->
 <main
     class="text-dark dark:bg-dark flex h-[100vh] w-full flex-col items-center justify-center gap-y-4 bg-white dark:text-white"
 >

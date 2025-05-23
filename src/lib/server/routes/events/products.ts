@@ -19,6 +19,7 @@ export default router({
                     .from(productTable)
                     .where(eq(productTable.event, input.slug))
                     .orderBy(
+                        asc(productTable.backgroundColor),
                         asclower(productTable.name),
                         asclower(productTable.description),
                     );

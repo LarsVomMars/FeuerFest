@@ -28,7 +28,7 @@
         { value: "BAR", name: "Bar" },
     ];
 
-    let selected = $state<string[]>(options.map((o) => o.value));
+    let selected = $state<string[]>(["FOOD"]);
 
     let products = $productRequest.data ?? [];
     type Product = (typeof products)[number];
@@ -111,7 +111,7 @@
 </script>
 
 <div
-    class="border-primary fixed top-27 left-10 flex items-center justify-center border-2 p-2"
+    class="border-primary fixed top-5 left-5 flex items-center justify-center border-2 p-2"
 >
     <ul>
         {#each options as option (option.value)}
@@ -128,9 +128,9 @@
     </ul>
 </div>
 
-<Heading title={event?.name + " - Kasse"} />
+<!-- <Heading title={event?.name + " - Kasse"} /> -->
 <div class="flex w-full">
-    <div class="w-1/5 space-y-2 p-2">
+    <div class="flex flex-col w-1/5 space-y-2 p-2 justify-center">
         <table class="w-full">
             <tbody>
                 {#each items as item (item.id)}
@@ -155,6 +155,14 @@
             disabled={items.length === 0}
         >
             Bestellen
+        </button>
+        <button
+            type="button"
+            class="bg-primary hover:bg-primary-200 disabled:bg-primary-300 w-full rounded-lg p-2 text-white"
+            onclick={() => (order = [])}
+            disabled={items.length === 0}
+        >
+            Abbrechen
         </button>
     </div>
     <div class="flex h-full w-4/5 flex-wrap items-center justify-center p-2">
