@@ -28,14 +28,14 @@
         { value: "BAR", name: "Bar" },
     ];
 
-    let selected = $state<string[]>(["FOOD"]);
+    let selected = $state<string>("FOOD");
 
     let products = $productRequest.data ?? [];
     type Product = (typeof products)[number];
     type ProductWithCount = Product & { count: number };
 
     let availableProducts = $derived(
-        products.filter((p) => selected.some((s) => s === p.type && p.enabled)),
+        products.filter((p) => selected === p.type && p.enabled),
     );
 
     const onclick = (product: Product) => (count: number) => {
@@ -68,7 +68,7 @@
                 name: "Sonstiges",
                 description: "",
                 price: value,
-                type: "FOOD",
+                type: selected as "DRINK" | "FOOD" | "BAR",
                 textColor: "black",
                 backgroundColor: "white",
                 createdAt: new Date(),
@@ -117,7 +117,7 @@
         {#each options as option (option.value)}
             <li class="select-none">
                 <input
-                    type="checkbox"
+                    type="radio"
                     id="cb-{option.value}"
                     bind:group={selected}
                     value={option.value}
@@ -130,7 +130,7 @@
 
 <!-- <Heading title={event?.name + " - Kasse"} /> -->
 <div class="flex w-full">
-    <div class="flex flex-col w-1/5 space-y-2 p-2 justify-center">
+    <div class="flex w-1/5 flex-col justify-center space-y-2 p-2">
         <table class="w-full">
             <tbody>
                 {#each items as item (item.id)}
@@ -150,7 +150,7 @@
         </table>
         <button
             type="submit"
-            class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full rounded-lg p-2 text-white"
+            class="bg-secondary hover:bg-secondary-200 disabled:bg-secondary-300 w-full cursor-pointer rounded-lg p-2 text-white disabled:cursor-not-allowed"
             onclick={orderDialog}
             disabled={items.length === 0}
         >
@@ -158,7 +158,7 @@
         </button>
         <button
             type="button"
-            class="bg-primary hover:bg-primary-200 disabled:bg-primary-300 w-full rounded-lg p-2 text-white"
+            class="bg-primary hover:bg-primary-200 disabled:bg-primary-300 w-full cursor-pointer rounded-lg p-2 text-white disabled:cursor-not-allowed"
             onclick={() => (order = [])}
             disabled={items.length === 0}
         >
@@ -195,7 +195,7 @@
             <ToggleButton bind:checked={voucher} label="Gutschein" />
             <SubmitButton text="Bestellen" />
             <button
-                class="bg-primary w-full rounded-md p-2 text-white"
+                class="bg-primary hover:bg-primary-200 w-full cursor-pointer rounded-md p-2 text-white"
                 type="button"
                 onclick={closeDialog}
             >
