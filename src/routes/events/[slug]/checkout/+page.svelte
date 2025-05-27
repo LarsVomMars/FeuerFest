@@ -58,13 +58,14 @@
     let total = $derived(order.reduce((acc, item) => acc + item.price, 0));
 
     let value = $state<number>();
+    let cid = $state(-1);
     const addCustomItem = (event?: Event) => {
         event?.preventDefault();
         if (value === undefined) return;
         order = [
             ...order,
             {
-                id: -1,
+                id: cid--,
                 name: "Sonstiges",
                 description: "",
                 price: value,

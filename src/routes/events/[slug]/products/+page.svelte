@@ -57,7 +57,7 @@
         { label: "Textfarbe", key: "textColor" },
         { label: "Hintergrundfarbe", key: "backgroundColor" },
         { label: "Aktiv", key: "enabled" },
-        { label: "", key: "actions" },
+        // { label: "", key: "actions" },
     ];
 
     type Row = RouterOutputs["events"]["products"]["list"][number];
@@ -129,9 +129,9 @@
                 update(row.id, { enabled: e.currentTarget.checked })}
         />
     </td>
-    <td>
+    <!-- <td>
         <DeleteAction ondelete={() => ondelete(row.id)} />
-    </td>
+    </td> -->
 {/snippet}
 
 <Heading title={event?.name + " - Produkte"} />

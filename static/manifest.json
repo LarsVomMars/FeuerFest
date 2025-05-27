@@ -1,0 +1,8 @@
+{
+    "name": "FeuerFest",
+    "short_name": "FeuerFest",
+    "display": "standalone",
+    "orientation": "landscape",
+    "start_url": "/",
+    "background_color": "#ffffff"
+}
